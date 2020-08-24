@@ -283,7 +283,11 @@ if(SummaryVar == "Gap"){
   #Plot prep
   if(Interactive){
  
-     Plots <- ggplot(data = Gap , aes(x = Gap_Class_cm , y = Percent , 
+     Plots <- %>%
+               mutate(Gap_Class_cm = fct_relevel(Gap, GapCover_25_plus, GapCover_25_50,
+                                                 GapCover_51_100, GapCover_101_200, 
+                                                 GapCover_200_plus) %>%
+                            ggplot( aes(x = Gap_Class_cm , y = Percent , 
                                       text = paste("PlotID: " , PlotID , 
                                             "PrimaryKey: ", PrimaryKey , 
                                             "Gap Class (cm): " , Gap_Class_cm, 
@@ -304,8 +308,11 @@ if(SummaryVar == "Gap"){
   }
   
   if(!Interactive){
-      Plots <- ggplot(data = Gap , aes(x = Gap_Class_cm , y = Percent)) +
-               labs(y = "Percent Cover" , x = "Gap Size Class (cm)", 
+      Plots <-  mutate(Gap_Class_cm = fct_relevel(Gap, GapCover_25_plus, GapCover_25_50,
+                                                 GapCover_51_100, GapCover_101_200, 
+                                                 GapCover_200_plus) %>%
+                ggplot(aes(x = Gap_Class_cm , y = Percent)) +
+                labs(y = "Percent Cover" , x = "Gap Size Class (cm)", 
                     caption = paste("Percent cover of canopy gap in: ", 
                                     toString(EcologicalSiteId))) +
                     geom_boxplot() + 
