@@ -1,0 +1,15 @@
+Package: SiteSummaryTool
+Date: 2020-08-24
+Type: Package
+Title: Ecological Site Summaries using Assessment, Inventory, and Monitoring (AIM) and Landscape Monitoring Framework (LMF) data
+Version: 0.0.1
+Authors@R: c(person(given = c("Rachel", "A."), family = "Burke", email = "rburke@blm.gov", role = c("aut", "cre"))
+Description: Provides functions and reporting template for interactive report of indicator summaries across ecological sites. 
+License: 
+Encoding: UTF-8
+LazyData: TRUE
+RoxygenNote:
+Imports: 
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
