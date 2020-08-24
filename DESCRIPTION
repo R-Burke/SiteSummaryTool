@@ -3,7 +3,7 @@ Type: Package
 Title: Ecological Site Summaries using Assessment, Inventory, and Monitoring (AIM) and Landscape Monitoring Framework (LMF) data
 Version: 0.1.0
 Author@R: c(person(given = c("Rachel", "A."), family = "Burke-Jasso", email = "rburke@blm.gov", role = c("aut", "cre"))
-Maintainer: rburke@blm.gov
+Maintainer: <rburke@blm.gov>
 Description: MProvides functions and reporting template for interactive report of indicator summaries across ecological sites. 
 License: MIT License
 Encoding: UTF-8
