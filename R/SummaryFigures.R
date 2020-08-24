@@ -283,8 +283,8 @@ if(SummaryVar == "Gap"){
   #Plot prep
   if(Interactive){
  
-     Plots <- %>%
-               mutate(Gap_Class_cm = fct_relevel(Gap, GapCover_25_plus, GapCover_25_50,
+     Plots <-  Gap %>%
+               dplyr::mutate(Gap_Class_cm = fct_relevel(Gap, GapCover_25_plus, GapCover_25_50,
                                                  GapCover_51_100, GapCover_101_200, 
                                                  GapCover_200_plus) %>%
                             ggplot( aes(x = Gap_Class_cm , y = Percent , 
@@ -308,7 +308,7 @@ if(SummaryVar == "Gap"){
   }
   
   if(!Interactive){
-      Plots <-  mutate(Gap_Class_cm = fct_relevel(Gap, GapCover_25_plus, GapCover_25_50,
+      Plots <-  Gap %>% mutate(Gap_Class_cm = fct_relevel(Gap, GapCover_25_plus, GapCover_25_50,
                                                  GapCover_51_100, GapCover_101_200, 
                                                  GapCover_200_plus) %>%
                 ggplot(aes(x = Gap_Class_cm , y = Percent)) +
