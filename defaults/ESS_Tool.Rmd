@@ -1,0 +1,1262 @@
+---
+title: "Ecological Site Summaries for External Data Users"
+subtitle: "Using Assessment, Inventory, and Monitoring Data"
+author: "A Reporting Tool by USDA-ARS Jornada" 
+date: " "
+output:
+  html_document:
+    theme: cosmo
+---
+```{r echo = FALSE}
+htmltools::img(src = knitr::image_uri("jornadalogo.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px;')
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE , message = FALSE , warning = FALSE)
+```
+
+![Photo by Patrick Alexander](BannerPhoto.jpg)
+
+# 1. Introduction {.tabset .tabset-fade .tabset-pills}
+##
+## About Ecological Sites
+
+The U.S. Department of Agriculture Natural Resources Conservation Service (NRCS) defines ecological sites as "a distinctive kind of land with specific physical characteristics that differs from other kinds of land in its ability to produce a distinctive kind and amount of vegetation" ([USDA–NRCS, 2006](https://www.nrcs.usda.gov/wps/portal/nrcs/detail/national/landuse/rangepasture/?cid=stelprdb1068392)). Ecological sites determine not only the ecological potential of a site, but also how a site can respond to natural disturbance and management actions. Ecological sites have been delineated for many areas using physical and biotic features and are linked to soil map units. Soils, climate, hydrology, geology, physiographic features, plants species occurrences, plant community composition, annual biomass production, and plant-wildlife interactions all contribute to the proerties of ecological sites.  Ecological Site Descriptions (ESDs) describe the underlying factors associated with a specific ecological site, as well as different ecological states within a given site based on factors such as grazing, fire, drought, and other management actions. For an example of an ESD, see [EDIT Jornada](https://edit.jornada.nmsu.edu/page?content=class-description&catalog=3&spatial=84&class=5802#top-bookmark).
+
+## Ecological Site Summary
+
+Using ecological monitoring data, the overall status of an Ecological Site can be summarized into an Ecological Site Summary (ESS). At the site level, ecological site summaries generated from monitoring data can tell us about the condition and health of ecological sites based on indicators such as cover by structure and functional group, species dominance, species occurrences, canopy gap measurements, and soil stability measurements. These indicators can help inform the user of the ecological state of a given plot or overall site (i.e. shrubland state vs. grassland state). Identifying the ecological state allows us to not only determine the degree of departure from the corresponding reference ecological states, but also to inform management and restoration actions accordingly by determining the best pathway to a less degraded state. For more on state and transition models (STMs), see see [Bestelmeyer et al., 2017](https://link.springer.com/content/pdf/10.1007%2F978-3-319-46709-2_9.pdf).
+A major data source for developing these summaries is the Assessment, Inventory, and Monitoring (AIM) Program along with the Landscape Monitoring Framework (LMF). AIM and LMF include almost 25,000 plots throughout the western United States (*see* [AIM Data Portal](https://aim.landscapetoolbox.org/data-management-project-evaluation/databases/)) stored in the Terrestrial AIM Database (TerrADat). Data garnered from AIM and LMF plots is both generalizable and scalable and thus applicable to management decisions across multiple disciplines at both local and national levels.
+
+## ESS Tool
+
+An Ecological Site Summary (ESS) tool has been developed to help users visualize the overall status of their region of interest within a specific ecological site, or across an ecological site group. This information can be summarized within a given administrative state or across political boundaries for landscape scale analysis. Ecological site summaries are generated using an R Markdown script with an interactive HTML output in which users can query summary tables, download full or filtered summary tables to view in Excel, explore interactive figures, and download static figures for their own use.
+
+This report is an automated process and can be continually updated as new data becomes available each year or as lines of inquiry shift. This ESS information can be included in decision making processes for BLM managers, as it can help inform land use plans, grazing permit renewals, shrub or invasive species treatments, and/or seed menu development for ecological restoration and reclamation.
+
+## Using the ESS Tool {.tabset .tabset-fade .tabset-pills}
+
+This report generates many tables and figures that can be queried, filtered, and downloaded to meet your management and reporting needs. Multiple output types are used to meet multiple needs, so select the most relevant and useful output. 
+
+###
+### I want this report generated for me
+
+This report is generated in RMarkdown. If you have R limitations and would prefer the report to be generated for you, use this [template](https://github.com/R-Burke/EcologicalSiteSummaries/blob/master/ESS_Template.xlsx) to request that Jornada run the report.
+
+### I want to group by other features for a custom report
+
+In cases where ESDs are not developed, grouping AIM data by other features can provide similar information, and potentially lead to the development of new ESDs. For this purpose, it may be informative to group data by features such as watershed units, soil map units, or biophysical settings. Spatial groupings may also be beneficial if you want to compare data that's in the same ecological site but across multiple management units such as grazing allotments, pastures, prescribed burn areas, etc. Grouping indicators by other spatial attributes is available in a customized report on page two of this [template](https://github.com/R-Burke/EcologicalSiteSummaries/blob/master/ESS_Template.xlsx).
+
+### I want to run this report myself {.tabset .tabset-fade .tabset-pills}
+
+####
+#### Getting started {.tabset .tabset-fade .tabset-pills}
+
+#####
+##### Access the script
+
+Download the RMarkdown script and supporting files by downloading the full Ecological Site Summary repository in a zipped folder [here](https://github.com/R-Burke/EcologicalSiteSummaries_ExternalUsers). Unzip the folder into your local drive documents (i.e. *C:/Users/*JSmith/Documents/EcologicalSiteSummaries). Open the ESS_Tool.Rmd file that's in the repository you unzipped to your local drive. Open the file using RStudio. The supporting documents in this folder will be necessary to run the script. This is an RMarkdown script with an HTML output. 
+
+Read this document alongside the RMarkdown script. 
+
+#####
+##### Download the data
+
+Download the TerrADat geodatabase from the external users sharepoint into **the same folder as this repository**. This is necessary for the file paths in this script to work properly. Make sure you have **TerrADat**, **TerrADatSpeciesIndicators**, **LMF**, **LMFSpeciesIndicators**, and **tblStateSpecies** in the geodatabase. Make sure the geodatabase is named **TerrADat**. 
+
+##### Set your ecological site
+
+To generate these reports, you need to specify your ecological site(s) of interest. You can specify a single ecological site that is restricted by state lines or create a list of multiple ecological sites that can span political boundaries. 
+Give the object "EcologicalSiteId" as Ecological Site Id in the section below:
+
+```{r set EcologicalSiteId, echo = TRUE, include = TRUE}
+
+# Set your defaults in this section here. 
+
+#Define your ecological site(s) of interest below (full ecological site id)
+#You can list as many as you want, or just 1. 
+library(SiteSummaryTool)
+EcologicalSiteId <- EcologicalSiteId
+
+#Set the path to TerrADat (this will be NULL if working within BLM network)
+#If working within BLM network, TerrADat_Path = NULL (this tool will direct to AIMPub)
+#BLM <- TRUE if internal (on VPN). BLM <- FALSE if external
+#EDIT_List_Path <- path to this repository
+TerrADat_Path <- TerrADat_Path
+EDIT_List_Path <- EDIT_List_Path
+#Set the path to your R library (make sure it's on local folder not network drive)
+LibraryPath <- LibraryPath
+BLM <- BLM
+State <- State
+
+```
+
+##### Run the report!
+
+The rest of the report is automated and requires no edits. 
+Click the Knit button at the top of your RStudio session and knit to an HTML. The output HTML document will be saved in the repository folder. View the document in Google Chrome or Firefox (*some features will be disabled in Internet Explorer*). You need to be connected to the internet to run the report, but you can view it without internet (*note that the basemap feature will be disabled offline*).
+
+
+``` {r ESS Demo, echo = FALSE, include = FALSE}
+#Load required packages
+InstallPackages(LibraryPath = LibraryPath)
+
+```
+
+
+```{r load data, echo = FALSE, include = FALSE}
+##The state species list table should also live in this geodatabase
+ 
+TDat_LMF <- Combine_AIM_LMF(TerrADat_Path = TerrADat_Path, 
+                            EDIT_List_Path = EDIT_List_Path, Internal = BLM)
+
+EcoSitePlots <- SubsetEcologicalSite(TDat_LMF, EcologicalSiteId)
+
+Species_Indicator <- Combine_AIM_LMF_Species(TerrADat_Path = TerrADat_Path, 
+                                             Internal = BLM)
+
+Species_plots_ecosite <- SubsetEcologicalSite_Species(EcoSitePlots, Species_Indicator)
+
+SpeciesList <- ReadSpeciesList(TerrADat_Path = TerrADat_Path, Internal = BLM)
+
+```
+
+# 2. Interpreting report figures {.tabset .tabset-fade .tabset-pills}
+
+This report uses boxplots to summarize cover values into quartiles while keeping outliers visible. The figures in this report are interactive within the tool. Hovering over the dots on the plot will give you the Plot ID of the plot from which the measure was obtained, as well as the individual species from which the measurement was obtained if applicable. Hovering over the boxplot will give you quartile values. The interactive figures can be downloaded as static figures to incorporate into reports.
+*The following image explains how to interpret a boxplot.*
+
+##
+## Boxplot
+
+![ Intepretting a Box Plot. Modified from: https://www.wellbeingatschool.org.nz/information-sheet/understanding-and-interpreting-box-plots (accessed 22 Aug2019)](boxplot_text.png)
+
+
+
+# 3. Where are the data coming from? {.tabset .tabset-fade .tabset-pills}
+##
+## Plot Map \
+
+Below is a map of  plots surveyed to date.
+Plots in our ecological site of interest are highlighted in red. \
+
+```{r map , echo = FALSE , include = TRUE}
+
+MakeMap(EcologicalSiteId, TDat_LMF, EcoSitePlots)
+                                         
+```
+
+
+## Some metadata {.tabset .tabset-fade .tabset-pills}
+###
+### Plots Per Year, All Ecological Sites (Nationally)
+
+```{r plots figure , echo = FALSE , include = TRUE , fig.height = 3 , fig.width = 8 , fig.cap = "Total Plots Per Year, AIM & LMF"}
+
+PlotMetadata(dataframe = TDat_LMF)
+
+```
+
+###
+### Plots Per Year, Your Ecological Site(s)
+
+```{r plots figure 2 , echo = FALSE , include = TRUE , fig.height = 3 , fig.width = 8, fig.cap = "Plots Per Year in Ecological Site, AIM & LMF"}
+
+PlotMetadata(dataframe = EcoSitePlots)
+
+```
+
+# 4. Species Cover Summaries {.tabset .tabset-fade .tabset-pills}
+
+Percent cover summaries use data from Line-point intercept (LPI) method to determine average cover of individual species, as well as summaries by structure and functional group cover, noxious versus non-noxious cover,  woody vs. non-woody cover, and cover by Sage-Grouse group. From the AIM data, we can make some simple figures showing cover values. These figures, along with the summary tables, can quickly be incorporated into any documents where this data is used (i.e. NEPA documents for grazing permit renewals, shrub treatments, etc).
+
+##
+
+## Figures {.tabset .tabset-fade .tabset-pills}
+
+###
+
+### Cover by Functional Group {.tabset .tabset-fade .tabset-pills}
+
+####
+
+#### Graminoid {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+```{r SFG plots grass , fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+SFG_Plots_Interactive <- SummaryFigures(SpeciesList, Species_plots_ecosite,  
+                                               EcologicalSiteId,  
+                                               SummaryVar = "GrowthHabitSub", 
+                                               Interactive = TRUE)
+
+ggplotly(SFG_Plots_Interactive[["Graminoid"]])
+
+```
+
+##### Static 
+```{r SFG plots grass static, fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+SFG_Plots_Static <- SummaryFigures(SpeciesList, Species_plots_ecosite,  
+                                               EcologicalSiteId,  
+                                               SummaryVar = "GrowthHabitSub", 
+                                               Interactive = FALSE)
+
+SFG_Plots_Static[["Graminoid"]]
+
+```
+
+
+#### Forb {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive
+
+```{r SFG plots forb , fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+ggplotly(SFG_Plots_Interactive[["Forb"]] , tooltip = "text")
+
+```
+
+##### Static 
+
+```{r SFG plots forb static, fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+SFG_Plots_Static[["Forb"]] 
+
+```
+
+#### Sub Shrub {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+```{r SFG plots subshrub , fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+ggplotly(SFG_Plots_Interactive[["SubShrub"]] , tooltip = "text")
+
+```
+
+##### Static 
+
+```{r SFG plots subshrub static, fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+SFG_Plots_Static[["SubShrub"]]
+
+```
+
+####  Shrub {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+```{r SFG plots shrub , fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+ggplotly(SFG_Plots_Interactive[["Shrub"]] , tooltip = "text")
+
+```
+
+##### Static 
+
+```{r SFG plots shrub static, fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+SFG_Plots_Static[["Shrub"]]
+
+```
+
+####  Tree {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+```{r SFG plots tree , fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+ggplotly(SFG_Plots_Interactive[["Tree"]] , tooltip = "text")
+
+```
+
+##### Static 
+
+```{r SFG plots tree static , fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+SFG_Plots_Static[["Tree"]]
+
+```
+
+####  Succulent {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+```{r SFG plots succulent , fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+ggplotly(SFG_Plots_Interactive[["Succulent"]] , tooltip = "text")
+
+```
+
+##### Static
+
+```{r SFG plots succulent static , fig.height = 5 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+SFG_Plots_Static[["Succulent"]]
+
+```
+
+### Cover by Noxious, Non-Noxious Species {.tabset .tabset-fade .tabset-pills}
+####
+#### Interactive 
+
+```{r nox plots , fig.height = 4 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+NoxiousPlot_Interactive <- SummaryFigures(SpeciesList, Species_plots_ecosite,  
+                                               EcologicalSiteId,  
+                                               SummaryVar = "Noxious", 
+                                               Interactive = TRUE)
+ggplotly(NoxiousPlot_Interactive)
+
+```
+
+#### Static
+
+```{r nox plots static , fig.height = 4 , fig.width = 10 , echo = FALSE, include = TRUE}
+
+SummaryFigures(SpeciesList, Species_plots_ecosite, EcologicalSiteId,  
+               SummaryVar = "Noxious", Interactive = FALSE)
+
+
+```
+
+### Cover by Species {.tabset .tabset-fade .tabset-pills}
+
+####
+
+#### Graminoid , Annual {.tabset .tabset-fade .tabset-pills}
+#####
+
+##### Interactive 
+
+<div class = "ScrollStyle">
+
+
+```{r species plots grass annual , fig.height = 10  , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+Species_Plots_Interactive <- SummaryFigures(SpeciesList, Species_plots_ecosite,  
+                                               EcologicalSiteId,  
+                                               SummaryVar = "Species", 
+                                               Interactive = TRUE)
+
+ggplotly(Species_Plots_Interactive[["Graminoid.Annual"]] , tooltip = "text")
+
+```
+
+</div>
+
+##### Static 
+
+<div class = "ScrollStyle">
+
+
+```{r species plots grass annual static , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+
+Species_Plots_Static <- SummaryFigures(SpeciesList, Species_plots_ecosite,  
+                                               EcologicalSiteId,  
+                                               SummaryVar = "Species", 
+                                               Interactive = FALSE)
+Species_Plots_Static[["Graminoid.Annual"]]
+
+```
+
+</div>
+
+#### Graminoid , Perennial {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive
+
+<div class = "ScrollStyle">
+
+```{r species plots grass perennial, fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+ggplotly(Species_Plots_Interactive[["Graminoid.Perennial"]] , tooltip = "text")
+
+```
+
+</div>
+
+##### Static
+
+```{r species plots grass perennial static, fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+Species_Plots_Static[["Graminoid.Perennial"]]
+
+```
+
+
+#### Forb, Annual {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive
+
+<div class = "ScrollStyle">
+
+```{r species plots forb annual , fig.height = 14 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+ggplotly(Species_Plots_Interactive[["Forb.Annual"]] , tooltip = "text")
+
+```
+
+</div>
+
+##### Static 
+
+
+```{r species plots forb annual static , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+Species_Plots_Static[["Forb.Annual"]]
+
+```
+
+
+#### Forb, Perennial {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+<div class = "ScrollStyle">
+
+```{r species plots forb perennial , fig.height = 14 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+ggplotly(Species_Plots_Interactive[["Forb.Perennial"]] , tooltip = "text")
+
+```
+
+</div>
+
+##### Static 
+
+
+```{r species plots forb perennial static, fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+Species_Plots_Static[["Forb.Perennial"]]
+
+```
+
+
+#### Sub Shrub {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+<div class = "ScrollStyle">
+
+
+```{r species plots subshrub , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+ggplotly(Species_Plots_Interactive[["SubShrub.Perennial"]] , tooltip = "text")
+
+```
+
+</div>
+
+##### Static 
+
+<div class = "ScrollStyle">
+
+
+```{r species plots subshrub static, fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+Species_Plots_Static[["SubShrub.Perennial"]]
+
+```
+
+</div>
+
+#### Shrub {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+<div class = "ScrollStyle">
+
+```{r species plots shrub , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+ggplotly(Species_Plots_Interactive[["Shrub.Perennial"]] , tooltip = "text")
+
+```
+
+</div>
+
+
+##### Static 
+<div class = "ScrollStyle">
+
+```{r species plots shrub static , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+Species_Plots_Static[["Shrub.Perennial"]]
+
+```
+
+</div>
+
+#### Tree {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+<div class = "ScrollStyle">
+
+```{r species plots tree , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+ggplotly(Species_Plots_Interactive[["Tree.Perennial"]] , tooltip = "text")
+
+```
+
+</div>
+
+##### Static 
+
+<div class = "ScrollStyle">
+
+```{r species plots tree static, fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+Species_Plots_Static[["Tree.Perennial"]]
+
+```
+
+</div>
+
+#### Succulent {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+<div class = "ScrollStyle">
+```{r species plots succulent , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+ggplotly(Species_Plots_Interactive[["Succulent.Perennial"]] , tooltip = "text")
+
+```
+
+</div>
+
+##### Static 
+
+<div class = "ScrollStyle">
+```{r species plots succulent static , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+Species_Plots_Static[["Succulent.Perennial"]]
+
+```
+</div>
+
+
+### Sage-Grouse Indicators {.tabset .tabset-fade .tabset-pills}
+
+#### By Sage-Grouse Group  {.tabset .tabset-fade .tabset-pills}
+
+#####
+##### Interactive
+
+*Note that sage-grouse groups may not be attributed for every state. Consult with your project lead before using these values in reporting.*
+
+<div class = "ScrollStyle">
+
+```{r sggroup interactive , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+
+ggplotly(SageGrouseSummaries(EcoSitePlots, Species_plots_ecosite, 
+                              SummaryVar = "SageGrouseGroup", 
+                              Interactive = TRUE), tooltip = "text")
+
+
+```
+</div>
+
+##### Static
+
+*Note that these groups may not be attributed for every state. Consult with your project lead before using these values in reporting.*
+
+
+<div class = "ScrollStyle">
+
+```{r sggroup static , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+SageGrouseSummaries(EcoSitePlots, Species_plots_ecosite, 
+                    SummaryVar = "SageGrouseGroup", Interactive = FALSE)
+
+```
+
+</div>
+
+
+#### Preferred Forbs  {.tabset .tabset-fade .tabset-pills}
+
+#####
+##### Interactive
+
+<div class = "ScrollStyle">
+
+```{r pref forb interactive , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+ggplotly(SageGrouseSummaries(EcoSitePlots, Species_plots_ecosite, 
+                    SummaryVar = "PreferredForb", Interactive = TRUE), tooltip = "text")
+
+```
+</div>
+
+##### Static
+
+<div class = "ScrollStyle">
+```{r pref forb static, fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+SageGrouseSummaries(EcoSitePlots, Species_plots_ecosite, 
+                    SummaryVar = "PreferredForb", Interactive = FALSE)
+
+```
+
+</div>
+
+#### Sagebrush  {.tabset .tabset-fade .tabset-pills}
+
+#####
+##### Interactive
+
+<div class = "ScrollStyle">
+
+```{r sagebrush interactive , fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+ggplotly(SageGrouseSummaries(EcoSitePlots, Species_plots_ecosite, 
+                    SummaryVar = "Sagebrush", Interactive = TRUE), tooltip = "text")
+
+```
+</div>
+
+##### Static
+
+<div class = "ScrollStyle">
+
+```{r pref sagebrush static, fig.height = 10 , fig.width = 10 , echo = FALSE, include = TRUE , results = 'asis'}
+
+SageGrouseSummaries(EcoSitePlots, Species_plots_ecosite, 
+                    SummaryVar = "Sagebrush", Interactive = FALSE)
+
+```
+
+</div>
+
+## Summary Tables {.tabset .tabset-fade .tabset-pills}
+
+Foliar cover values are summarized in tables below. Tables summarize data across the ecological site as well as by plot within the ecological site. *Note that percent cover on a per-plot basis is not cumulative because we are calculating cover from any hit on line point intercept. Percent cover values per plot could therefore potentially add up to over 100. See Ground Cover Summary Table for total foliar cover estimates.* Per plot measurements are intended to allow you to compare plot level data to the status of the ecological site as a whole. 
+
+###
+
+### Percent Cover by Species {.tabset .tabset-fade .tabset-pills}
+####
+#### By Plot
+
+Percent cover by species by plot within your specified ecological site. 
+
+```{r plots, echo = FALSE , resutls = 'asis' , fig.height = 8}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "Species", 
+              SummarizeBy = "Plot")
+```
+
+#### Ecological Site 
+
+Percent cover by species averaged across the ecological site.
+
+```{r species, echo = FALSE , resutls = 'asis' , fig.height = 8}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "Species", 
+              SummarizeBy = "EcologicalSite")
+
+```
+
+### Percent Cover by Structure and Functional Group {.tabset .tabset-fade .tabset-pills}
+
+####
+
+#### By Plot
+
+Average percent cover by structure and functional group across your specified ecological site. 
+
+```{r SFG by plot , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "GrowthHabitSub", 
+              SummarizeBy = "Plot")
+                       
+```
+
+#### Ecological Site 
+
+Average percent cover by structure and functional group across your specified ecological site. 
+
+```{r SFG , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "GrowthHabitSub", 
+              SummarizeBy = "EcologicalSite")
+                       
+```
+
+### Percent Cover, Noxious vs. Non-Noxious Species{.tabset .tabset-fade .tabset-pills}
+
+####
+#### By Plot
+
+Percent cover by noxious versus non-noxious plants by plot within your specified ecological site. 
+
+```{r noxious by plot , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "Noxious", 
+              SummarizeBy = "Plot")
+
+```
+
+#### Ecological Site
+
+Percent cover by noxious versus non-noxious plants averaged across your specified ecological site. 
+
+```{r noxious , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "Noxious", 
+              SummarizeBy = "EcologicalSite")
+
+```
+
+### Percent Cover, Woody vs. Non-Woody {.tabset .tabset-fade .tabset-pills}
+
+####
+#### By Plot
+
+```{r woody by plot , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "Woody", 
+              SummarizeBy = "Plot")
+
+```
+
+#### Ecological Site
+
+Percent cover by woody versus herbaceous plants averaged across your specified ecological site.  
+
+```{r woody , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "Woody", 
+              SummarizeBy = "EcologicalSite")
+
+```
+
+### Percent Cover by Sage-Grouse Group {.tabset .tabset-fade .tabset-pills}
+
+####
+
+#### By Plot
+
+*Note that these groups may not be attributed in every state. Consult with your project lead before using these values in reporting*
+
+
+Percent cover by Sage-Grouse group by plot within your specified ecological site. 
+
+```{r Sage-Grouse by Plot, echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "SageGrouseGroup", 
+              SummarizeBy = "Plot")
+                       
+```
+
+#### Ecological Site
+
+*Note that these groups may not be attributed in every state. Consult with your project lead before using these values in reporting*
+
+Percent cover by Sage-Grouse group averaged across your specified ecological site. 
+
+```{r Sage Grouse , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "SageGrouseGroup", 
+              SummarizeBy = "EcologicalSite")
+                       
+```
+
+
+### Percent Cover, Preferred Forbs {.tabset .tabset-fade .tabset-pills}
+
+####
+#### By Plot
+
+```{r Sage Grouse PrefForb by Plot, echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "PreferredForb", 
+              SummarizeBy = "Plot") 
+                       
+```
+
+#### Ecological Site
+
+Percent cover by preferred forbs averaged across your specified ecological site.
+
+```{r Sage-Grouse PrefForb, echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "PreferredForb", 
+              SummarizeBy = "EcologicalSite") 
+                       
+```
+
+## Trace Species {.tabset .tabset-fade .tabset-pills}
+
+It is unlikely that all species on a plot will be detected in line point intercept. It can be inferred that these species that were never detected in LPI have "low abundance" across this ecological site. To determine all species detected on plots throughout an ecological site (or other grouping feature), we can pull in all species detected from all other methods using the accumulated species indicator. This can give us an idea of overall diversity across the ecological site, indicate seed bank and restoration potential, and inform us more about community composition and species trends as plots are repeatedly surveyed.
+
+###
+
+### By Plot
+
+This table contains species that were only ever detected in species richness inventory on a per plot basis within the ecological site. 
+
+```{r trace species table by plot  , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "TraceSpecies", 
+              SummarizeBy = "Plot") 
+
+```
+
+### Ecological Site
+
+This table contains species that were only ever detected in species richness inventory across the entire ecological site. 
+
+```{r trace species table , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "TraceSpecies", 
+              SummarizeBy = "EcologicalSite") 
+
+```
+
+
+# 5. Ground Cover Summaries {.tabset .tabset-fade .tabset-pills}
+
+In addition to species-specific indicators, we can summarize ground cover indicators to get percent cover values for bare ground, total rock, total litter, and total foliar. Additional indicators that can be included here are Lichen ("LC") , Moss ("M") , Duff ("D"), and/or Cyanobacteria ("CY"). These calculations are informative for assessing the status of the ecological site as a whole, susceptibility to erosion, and/or cross-walking AIM data to [Rangeland Health Assessments](https://www.landscapetoolbox.org/manuals/iirhv5/) when used in conjunction with species specific calculations.
+
+##
+## Figures {.tabset .tabset-fade .tabset-pills}
+
+###
+### Interactive  
+
+```{r LPI ground plot , echo = FALSE , fig.height = 10 , fig.width = 10 , results = 'asis'}
+
+ggplotly(SummaryFigures(SpeciesList, Species_plots_ecosite,  
+                        EcologicalSiteId, SummaryVar = "GroundCover", 
+                        Interactive = TRUE))
+
+```
+
+### Static 
+
+```{r LPI ground plot static , echo = FALSE ,  fig.height = 10 , fig.width = 10 ,  results = 'asis'}
+
+SummaryFigures(SpeciesList, Species_plots_ecosite,  
+                        EcologicalSiteId, SummaryVar = "GroundCover", 
+                        Interactive = FALSE)
+
+```
+
+
+## Summary Tables {.tabset .tabset-fade .tabset-pills}
+
+###
+### By Plot
+
+Ground cover indicator values by plot within the specified ecological site.
+
+```{r LPI ground cover table plot, echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "GroundCover", 
+              SummarizeBy = "Plot")
+
+```
+
+### Ecological Site
+
+Ground cover values averaged across the specified ecological site.
+ 
+```{r LPI ground cover table , echo = FALSE , results = 'asis'}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "GroundCover", 
+              SummarizeBy = "EcologicalSite")
+
+```
+
+# 6. Vegetation Heights {.tabset .tabset-fade .tabset-pills}
+
+Looking at height data in conjunction with canopy gap data helps inform the vegetation structure across a site.
+
+##
+## Heights Figures  {.tabset .tabset-fade .tabset-pills}
+
+### 
+### By Functional Group {.tabset .tabset-fade .tabset-pills}
+
+####
+#### Interactive 
+
+```{r heights plot , fig.height = 10 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+ggplotly(SummaryFigures_Height(Species_plots_ecosite, EcologicalSiteId,
+                      SummaryVar = "Height", GroupBy = "GrowthHabit", 
+                      Interactive = TRUE), tooltip = "text")
+
+```
+
+#### Static 
+
+```{r heights plot static , fig.height = 10 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+SummaryFigures_Height(Species_plots_ecosite, EcologicalSiteId,
+                      SummaryVar = "Height", GroupBy = "GrowthHabit", 
+                      Interactive = FALSE)
+
+```
+
+### By Species  {.tabset .tabset-fade .tabset-pills}
+####
+
+#### Graminoid , Annual {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+```{r heights plot grass , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+Height_species_interactive <- SummaryFigures_Height(Species_plots_ecosite, 
+                                                    EcologicalSiteId,
+                                                    SummaryVar = "Height", 
+                                                    GroupBy = "Species", 
+                                                    Interactive = TRUE)
+ggplotly((Height_species_interactive[["Graminoid.Annual"]]), tooltip = "text")
+
+```
+
+##### Static 
+
+```{r heights plot grass static , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+Height_species_static <- SummaryFigures_Height(Species_plots_ecosite, 
+                                                    EcologicalSiteId,
+                                                    SummaryVar = "Height", 
+                                                    GroupBy = "Species", 
+                                                    Interactive = FALSE)
+
+Height_species_static[["Graminoid.Annual"]]
+
+```
+
+#### Graminoid , Perennial {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive
+
+```{r heights plot grass p, fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+ggplotly(Height_species_interactive[["Graminoid.Perennial"]] , tooltip = "text")
+
+```
+
+##### Static
+
+```{r heights plot grass p static , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+Height_species_static[["Graminoid.Perennial"]]
+
+```
+
+#### Forb , Annual {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive
+
+```{r heights plot forb , fig.height = 5 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+ggplotly(Height_species_interactive[["Forb.Annual"]] , tooltip = "text")
+
+```
+
+##### Static 
+
+```{r heights plot forb static , fig.height = 8 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+Height_species_static[["Forb.Annual"]]
+
+```
+
+#### Forb , Perennial {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+```{r heights plot forb p , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+ggplotly(Height_species_interactive[["Forb.Perennial"]] , tooltip = "text")
+
+```
+
+##### Static
+
+```{r heights plot forb p static , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+Height_species_static[["Forb.Perennial"]]
+
+```
+
+#### SubShrub {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+```{r heights plot subshrub , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+ggplotly(Height_species_interactive[["SubShrub.Perennial"]] , tooltip = "text")
+
+```
+
+##### Static
+
+```{r heights plot subshrub static , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+Height_species_static[["SubShrub.Perennial"]]
+
+```
+
+#### Shrub {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive
+
+```{r heights plot shrub , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+ggplotly(Height_species_interactive[["Shrub.Perennial"]] , tooltip = "text")
+
+```
+
+##### Static 
+
+```{r heights plot shrub static , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+Height_species_static[["Shrub.Perennial"]]
+
+```
+
+#### Tree {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive
+
+```{r heights plot tree , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+ggplotly(Height_species_interactive[["Tree.Perennial"]] , tooltip = "text")
+
+```
+
+##### Static
+
+```{r heights plot tree static , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+Height_species_static[["Tree.Perennial"]]
+
+```
+
+#### Succulent {.tabset .tabset-fade .tabset-pills}
+#####
+##### Interactive 
+
+```{r heights plot succ , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+ggplotly(Height_species_interactive[["Succulent.Perennial"]] , tooltip = "text")
+
+```
+
+##### Static 
+
+```{r heights plot succ static , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+Height_species_static[["Succulent.Perennial"]]
+
+```
+
+### Sagebrush {.tabset .tabset-fade .tabset-pills}
+
+#### 
+#### Interactive
+
+```{r heights plot sagebrush , fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+ggplotly(SummaryFigures_Height(Species_plots_ecosite, EcologicalSiteId,
+                      SummaryVar = "Height", GroupBy = "Sagebrush", 
+                      Interactive = TRUE), tooltip = "text")
+```
+
+#### Static
+
+```{r heights plot sagebrush static, fig.height = 6 , fig.width = 10 , echo = FALSE , include = TRUE}
+
+SummaryFigures_Height(Species_plots_ecosite, EcologicalSiteId,
+                      SummaryVar = "Height", GroupBy = "Sagebrush", 
+                      Interactive = FALSE)
+
+```
+
+
+## Heights Summary Tables {.tabset .tabset-fade .tabset-pills}
+###
+
+### Functional Group {.tabset .tabset-fade .tabset-pills}
+
+####
+#### By Plot
+
+```{r heights table plot, echo = FALSE , include = TRUE}
+
+SummaryTables_Height(Species_plots_ecosite, SummaryVar = "Height", 
+                     SummarizeBy = "Plot", GroupBy = "GrowthHabit")
+ 
+```
+
+
+#### Ecological Site
+
+```{r heights table , echo = FALSE , include = TRUE}
+
+SummaryTables_Height(Species_plots_ecosite, SummaryVar = "Height", 
+                     SummarizeBy = "EcologicalSite", GroupBy = "GrowthHabit")
+
+```
+
+### Species {.tabset .tabset-fade .tabset-pills}
+
+####
+
+#### By Plot
+
+```{r heights table plot , echo = FALSE , include = TRUE}
+
+SummaryTables_Height(Species_plots_ecosite, SummaryVar = "Height", 
+                     SummarizeBy = "Plot", GroupBy = "Species")
+
+```
+
+#### Ecological Site
+
+```{r heights table species, echo = FALSE , include = TRUE}
+
+SummaryTables_Height(Species_plots_ecosite, SummaryVar = "Height", 
+                     SummarizeBy = "EcologicalSite", GroupBy = "Species")
+
+```
+
+### Sagebrush {.tabset .tabset-fade .tabset-pills}
+
+####
+#### By Plot
+
+```{r heights table sagebrush plot, echo = FALSE , include = TRUE}
+
+SummaryTables_Height(Species_plots_ecosite, SummaryVar = "Height", 
+                     SummarizeBy = "Plot", GroupBy = "Sagebrush")
+
+```
+
+
+#### Ecological Site
+
+```{r heights table sagebrush site, echo = FALSE , include = TRUE}
+
+SummaryTables_Height(Species_plots_ecosite, SummaryVar = "Height", 
+                     SummarizeBy = "EcologicalSite", GroupBy = "Sagebrush")
+
+```
+
+# 7. Canopy Gap  {.tabset .tabset-fade .tabset-pills}
+
+Canopy gap intercept can inform us about potential wind erosion, weed invasion, and wildlife habitat. When combined with vegetation height measurements, gap measurements can inform us about vegetation structure (see p. 41 in the [Monitoring Manual](https://www.landscapetoolbox.org/wp-content/uploads/2016/02/MMGSSE_20170614.pdf) for methods). Canopy gap, bare soil, and vegetation heights c
+an also be used to determine thresholds at which vegetation structure may lead to a shift in ecological states.
+
+##
+## Canopy Gap Size Class Figure  {.tabset .tabset-fade .tabset-pills}
+###
+### Interactive
+
+```{r Gap plot , echo = FALSE , include = TRUE , fig.height = 10 , fig.width= 8}
+
+ggplotly(SummaryFigures(SpeciesList, Species_plots_ecosite,  
+                        EcologicalSiteId,  SummaryVar = "Gap", 
+                        Interactive = TRUE), tooltip = "text") 
+
+```
+
+### Static
+
+```{r Gap plot static , echo = FALSE , include = TRUE , fig.height = 7 , fig.width= 8}
+
+SummaryFigures(SpeciesList, Species_plots_ecosite,  
+               EcologicalSiteId, SummaryVar = "Gap", 
+               Interactive = FALSE)
+
+```
+
+## Canopy Gap Size Class Summary Table {.tabset .tabset-fade .tabset-pills}
+
+###
+### By Plot
+
+The table below shows gap size classes represented within each plot within the specified ecological site. 
+
+```{r Gap plot summary , echo = FALSE , include = TRUE}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "Gap", 
+              SummarizeBy = "Plot")
+
+```
+
+### Ecological Site
+
+Below is a summary of average percent cover within each gap size class across the specified ecological site.
+
+```{r Gap summary , echo = FALSE , include = TRUE}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "Gap", 
+              SummarizeBy = "EcologicalSite")
+  
+```
+
+# 8. Soil Stability  {.tabset .tabset-fade .tabset-pills}
+
+Soil stability provides information on soil structure development and resistance to erosion. The soil stability test measures the soil's stability when exposed to rapid wetting, and reflects soil biotic integrity (see page 47 in the [Monitoring Manual](https://www.landscapetoolbox.org/wp-content/uploads/2016/02/MMGSSE_20170614.pdf).)
+
+##
+## Soil Stability Summary Figure {.tabset .tabset-fade .tabset-pills}
+
+###
+### Interactive
+```{r soil stab plot , echo = FALSE , include = TRUE , fig.height = 8 , fig.width = 10}
+
+ggplotly(SummaryFigures(SpeciesList, Species_plots_ecosite,  
+         EcologicalSiteId,SummaryVar = "SoilStability", Interactive = TRUE), 
+         tooltip = "text")
+
+```
+
+### Static
+```{r soil stab plot static , echo = FALSE , include = TRUE , fig.height = 8 , fig.width = 10}
+
+SummaryFigures(SpeciesList, Species_plots_ecosite,  
+         EcologicalSiteId,SummaryVar = "SoilStability", Interactive = FALSE)
+
+```
+
+## Soil Stability Summary Table {.tabset .tabset-fade .tabset-pills}
+
+###
+### By Plot
+
+Below are the soil stability ratings for each individual plot within the specified ecological site. 
+
+```{r soil stab table by plot , echo = FALSE , include = TRUE}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "SoilStability", 
+              SummarizeBy = "Plot")
+
+```
+
+### Ecological Site
+
+Below are the average soil stability ratings within the specified ecological site. 
+
+```{r soil stab table , echo = FALSE , include = TRUE}
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar = "SoilStability", 
+              SummarizeBy = "EcologicalSite")
+
+```
+
+
