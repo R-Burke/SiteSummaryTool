@@ -177,4 +177,3 @@ if(SummaryVar == "Height" & SummarizeBy == "EcologicalSite" & GroupBy == "Sagebr
 return(table)
 
 }
-}
