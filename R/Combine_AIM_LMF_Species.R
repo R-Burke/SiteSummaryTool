@@ -8,9 +8,9 @@ Combine_AIM_LMF_Species <- function(TerrADat_Path, Internal){
     LMFSpecies <- dplyr::select(LMFSpecies, -Shape)}
 
   if(Internal){
-    TerrADatSpecies <- AIMPub_TerrADat_Species()
-    LMFSpecies <- AIMPub_LMF_Species()
-    SpeciesList <- AIMPub_SpeciesList()
+    TerrADatSpecies <- TerrADatSpecies
+    LMFSpecies <- LMFSpecies
+    SpeciesList <- SpeciesList
   }
 
   LMFSpecies[setdiff(names(TerrADatSpecies) , names(LMFSpecies))] <- NA
