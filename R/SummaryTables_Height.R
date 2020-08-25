@@ -1,4 +1,5 @@
 
+# Summary tables for vegetation height
 SummaryTables_Height <- function(Species_plots_ecosite, 
                           SummaryVar, SummarizeBy, GroupBy){
 
