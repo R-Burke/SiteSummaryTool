@@ -9,9 +9,8 @@ Combine_AIM_LMF <- function(TerrADat_Path, EDIT_List_Path, Internal){
   LMF <- dplyr::select(LMF, -Shape)}
   
   if(Internal){
-  conn <- RODBC::odbcConnect("ilmocAIMPub")
-  TerrADat <- sqlQuery(conn, 'SELECT * FROM ilmocAIMPub.ilmocAIMPubDBO.TerrADat;')
-  LMF <- sqlQuery(conn, 'SELECT * FROM ilmocAIMPub.ilmocAIMPubDBO.LMF;')}
+  TerrADat <- TerrADat
+  LMF <- LMF
   
   #Read in full csv of ecological site ids from EDIT
   
