@@ -11,6 +11,7 @@ Combine_AIM_LMF <- function(TerrADat_Path, EDIT_List_Path, Internal){
   if(Internal){
   TerrADat <- TerrADat
   LMF <- LMF
+   }
   
   #Read in full csv of ecological site ids from EDIT
   
