@@ -5,7 +5,7 @@ InstallPackages <- function(LibraryPath){
 
   packages <- c("devtools", "tidyverse", "knitr", "DT", "leaflet", "RODBC",
                 "sf", "rworldmap", "rworldxtra", "plotly", "htmltools",
-                "ggplot2")
+                "ggplot2", "glue")
 
   package.check <- lapply(
     packages,
