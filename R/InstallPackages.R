@@ -1,7 +1,7 @@
 #Install required packages
 InstallPackages <- function(LibraryPath){
-  myPaths <- .libPaths()
-  myPaths <- c(myPaths, LibraryPath)
+  
+  .libPaths(LibraryPath)
 
   packages <- c("devtools", "tidyverse", "knitr", "DT", "leaflet", "RODBC",
                 "sf", "rworldmap", "rworldxtra", "plotly", "htmltools",
