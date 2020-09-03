@@ -9,6 +9,8 @@ License: MIT License
 Encoding: UTF-8
 LazyData: true
 Imports: devtools, 
+  withr,
+  usethis,
   tidyverse, 
   knitr, 
   DT, 
