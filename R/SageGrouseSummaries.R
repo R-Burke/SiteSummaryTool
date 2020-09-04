@@ -1,5 +1,5 @@
-# SageGrouseSummaries <- function(EcoSitePlots, Species_plots_ecosite, 
-#                                 Interactive, SummaryVar){
+SageGrouseSummaries <- function(EcoSitePlots, Species_plots_ecosite, 
+                                 Interactive, SummaryVar){}
 #   
 #   SageGrouseStates <- c("CO", "UT", "NV", "CA", "WY", "MT", "ID", "OR", "WA", "ND", "SD")
 #   
