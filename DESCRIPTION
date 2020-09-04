@@ -22,6 +22,7 @@ Imports: devtools,
   rworldxtra, 
   plotly, 
   htmltools,
-  ggplot2 (== 3.2.1),
-  magitrr
-  
+  ggplot2 (== 3.2.1)
+ Suggests: magitrr,
+    rmarkdown
+
