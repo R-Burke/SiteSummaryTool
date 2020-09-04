@@ -6,5 +6,8 @@ ReadSpeciesList <- function(TerrADat_Path, Internal){
   if(Internal){
     SpeciesList <- SpeciesList
   }
+  
   return(SpeciesList)
+  
 }
+
