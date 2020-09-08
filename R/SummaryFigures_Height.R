@@ -121,7 +121,7 @@ if(Interactive){
 
 if(SummaryVar == "Height" & GroupBy == "Sagebrush"){
     Sagebrush <- HgtPrep %>% subset(SG_Group == "Sagebrush") 
-    if(nrow(Sagebrush <= 1)){Plots <- NULL}
+    if(nrow(Sagebrush) < 1){Plots <- NULL}
   else{
   if(Interactive){
         Plots <- ggplot(Sagebrush, aes(x = Species , y = Hgt_Species_Avg , 
