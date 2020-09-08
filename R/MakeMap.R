@@ -12,9 +12,9 @@ MakeMap <- function(EcologicalSiteId, TDat_LMF, EcoSitePlots){
   EcoSiteList <- unique(TDat_LMF$EcologicalSiteId)
 
   #Set color palettes
-  Pal_EcoSite <- colorFactor(palette = 'YlOrRd' , domain = TDat_LMF$es_name)
-  Pal_Date <- colorFactor(palette = 'Greys' , domain = TDat_LMF$Year)
-  Pal_EcoSiteID <- colorFactor(palette = "Red" , domain = EcologicalSiteId)
+  Pal_EcoSite <- leaflet::colorFactor(palette = 'YlOrRd' , domain = TDat_LMF$es_name)
+  Pal_Date <- leaflet::colorFactor(palette = 'Greys' , domain = TDat_LMF$Year)
+  Pal_EcoSiteID <- leaflet::colorFactor(palette = "Red" , domain = EcologicalSiteId)
   EcoSite_All <- TDat_LMF$es_name
   Year <- TDat_LMF$Year
 
