@@ -124,7 +124,7 @@ if(SummaryVar == "Height" & GroupBy == "Sagebrush"){
   if(Interactive){
     
     HgtPrep <- HgtPrep %>% subset(SG_Group == "Sagebrush") 
-    if(nrow(HgtPrep < 1){Plots <- NULL}
+    if(nrow(HgtPrep < 1)){Plots <- NULL}
        else{
     Plots <- ggplot(aes(x = Species , y = Hgt_Species_Avg , 
                        text = paste("Plot Id: " , PlotID , 
@@ -149,7 +149,7 @@ if(SummaryVar == "Height" & GroupBy == "Sagebrush"){
 if(!Interactive){
   
   HgtPrep <- HgtPrep %>% subset(SG_Group == "Sagebrush") 
-  if(nrow(HgtPrep < 1){Plots <- NULL}
+  if(nrow(HgtPrep < 1)){Plots <- NULL}
      else{
   Plots <-  ggplot(aes(x = Species , y = Hgt_Species_Avg)) +
            geom_boxplot() +
