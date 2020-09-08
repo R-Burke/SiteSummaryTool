@@ -120,13 +120,11 @@ if(Interactive){
   
 
 if(SummaryVar == "Height" & GroupBy == "Sagebrush"){
-  
-  if(Interactive){
-    
     HgtPrep <- HgtPrep %>% subset(SG_Group == "Sagebrush") 
     if(nrow(HgtPrep < 1)){Plots <- NULL}
-       else{
-    Plots <- ggplot(HgtPrep, aes(x = Species , y = Hgt_Species_Avg , 
+  else{
+  if(Interactive){
+        Plots <- ggplot(HgtPrep, aes(x = Species , y = Hgt_Species_Avg , 
                        text = paste("Plot Id: " , PlotID , 
                        "PrimaryKey: " , PrimaryKey ,
                        "Species: " , Species , 
@@ -141,16 +139,13 @@ if(SummaryVar == "Height" & GroupBy == "Sagebrush"){
               axis.title.x = element_blank(), axis.text.y = element_blank()) +
               facet_grid(rows = vars(Species), scales = "free_y", drop = TRUE) + 
               coord_flip() 
-  }  
+   
   }
   
 }
 
 if(!Interactive){
   
-  HgtPrep <- HgtPrep %>% subset(SG_Group == "Sagebrush") 
-  if(nrow(HgtPrep < 1)){Plots <- NULL}
-     else{
   Plots <-  ggplot(HgtPrep, aes(x = Species , y = Hgt_Species_Avg)) +
            geom_boxplot() +
            geom_jitter(width = .1 , shape = 21) + theme_light() +
