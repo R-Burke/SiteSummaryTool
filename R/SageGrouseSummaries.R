@@ -18,7 +18,7 @@ SageGrouseSummaries <- function(EcoSitePlots, Species_plots_ecosite,
                   dplyr::mutate_if(is.numeric, round , digits = 2) %>%
                   filter(!is.na(SG_Group)) # only filter this for the sage-grouse plots
 
-if(!EcoSitePlots$State %in% SageGrouseStates){SG_Plots <- NULL}
+if(!EcoSitePlots$State %in% SageGrouseStates){SG_Plots <- paste0("No type I Sage-Grouse Habitat in ", State)}
 
   else{
 
