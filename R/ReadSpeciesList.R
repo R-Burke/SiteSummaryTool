@@ -7,6 +7,7 @@ ReadSpeciesList <- function(TerrADat_Path, Internal){
     SpeciesList <- SpeciesList
   }
   
+  SpeciesList <- SpeciesList %>% dplyr::rename(Species = SpeciesCode) 
   return(SpeciesList)
   
 }
