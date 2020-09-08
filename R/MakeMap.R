@@ -39,7 +39,7 @@ MakeMap <- function(EcologicalSiteId, TDat_LMF, EcoSitePlots){
                      color = "red" , group = EcologicalSiteId ,
                      data = EcoSitePlots) %>%
     leaflet::addLayersControl(overlayGroups = c(EcologicalSiteId , Year) ,
-                     options = layersControlOptions(collapsed = TRUE)) %>%
+                     options = leaflet::layersControlOptions(collapsed = TRUE)) %>%
     leaflet::addLegend(pal = Pal_Date , values = TDat_LMF$Year , opacity = 1 , group = Year) %>%
     leaflet::addLegend(pal = Pal_EcoSiteID , values = EcologicalSiteId , opacity = 1 , group = EcologicalSiteId)
 
