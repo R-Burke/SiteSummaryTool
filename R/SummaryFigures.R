@@ -4,7 +4,8 @@ SummaryFigures <- function(SpeciesList, Species_plots_ecosite, EcologicalSiteId,
                                   SummaryVar, Interactive){
 
 #Prep
-  SpeciesList <- SpeciesList %>% dplyr::select(Species, ScientificName, CommonName,
+  SpeciesList <- SpeciesList %>% dplyr::rename(Species = SpeciesCode) %>%
+                 dplyr::select(Species, ScientificName, CommonName,
                                                Family, SpeciesState,
                                                SynonymOf, UpdatedSpeciesCode) %>% 
                  dplyr::mutate(link = paste("https://plants.sc.egov.usda.gov/core/profile?symbol=", Species, sep = ""))
