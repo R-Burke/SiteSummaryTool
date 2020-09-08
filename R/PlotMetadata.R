@@ -16,7 +16,7 @@ PlotMetadata <- function(dataframe){
     scale_fill_manual(values = Year_Palette) +
     ggtitle("Plots Per Year") +
     coord_flip() + theme(axis.text.y = element_blank())
-    PlotsPerYear<- ggplotly(PlotsPerYear , tooltip = "text")
+    PlotsPerYear<- plotly::ggplotly(PlotsPerYear , tooltip = "text")
   
   return(PlotsPerYear)
 
