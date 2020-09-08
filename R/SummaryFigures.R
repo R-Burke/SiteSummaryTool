@@ -4,7 +4,7 @@ SummaryFigures <- function(SpeciesList, Species_plots_ecosite, EcologicalSiteId,
                                   SummaryVar, Interactive){
 
 #Prep
-  SpeciesList <- SpeciesList %>% dplyr::rename(Species = SpeciesCode) %>%
+  SpeciesList <- SpeciesList %>% 
                  dplyr::select(Species, ScientificName, CommonName,
                                                Family, SpeciesState,
                                                SynonymOf, UpdatedSpeciesCode) %>% 
