@@ -1,7 +1,7 @@
 \name{Combine_AIM_LMF}
 \alias{Combine_AIM_LMF}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Combine_AIM_LMF
+\title{
 %%  ~~function to do ... ~~
 }
 \description{
@@ -12,7 +12,7 @@ Combine_AIM_LMF(TerrADat_Path, EDIT_List_Path, Internal)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{TerrADat_Path}{file path to the TerrADat geodatabase. Set to NULL if you are internal (within Bureau of Land Management network/vpn)
+   \item{TerrADat_Path}{file path to the TerrADat geodatabase. Set to NULL if you are internal (within Bureau of Land Management network/vpn)
 }
   \item{EDIT_List_Path}{file path to the .csv with list of formal ecological site ids (on the sharepoint with Site Summary Tool template)
 }
@@ -54,3 +54,50 @@ Combine_AIM_LMF(TerrADat_Path = NULL,
                    EDIT_List_Path = "~/Projects/ESSTool/Defaults",
                    Internal = TRUE)
 
+## The function is currently defined as
+function (TerrADat_Path, EDIT_List_Path, Internal)
+{
+    if (!Internal) {
+        TerrADat <- sf::st_read(dsn = TerrADat_Path, layer = "TerrADat")
+        LMF <- sf::st_read(dsn = TerrADat_Path, layer = "LMF")
+        TerrADat <- as.data.frame(TerrADat)
+        TerrADat <- dplyr::select(TerrADat, -Shape)
+        LMF <- as.data.frame(LMF)
+        LMF <- dplyr::select(LMF, -Shape)
+    }
+    if (Internal) {
+        TerrADat <- TerrADat
+        LMF <- LMF
+    }
+    EDIT <- read.csv(file = paste0(EDIT_List_Path, "/", "EDIT_public_ecological_site_list.csv"))
+    EDIT[["EcoSiteId_Stripped"]] <- gsub(EDIT[["new_es_symbol"]],
+        pattern = "^[RF]", replacement = "")
+    ecosite_lut <- unique(EDIT[, c("new_es_symbol", "EcoSiteId_Stripped")])
+    any(table(ecosite_lut[["EcoSiteId_Stripped"]]) > 1)
+    trouble_ids <- names(table(ecosite_lut[["EcoSiteId_Stripped"]]))[table(ecosite_lut[["EcoSiteId_Stripped"]]) >
+        1]
+    ecosite_lut_drop_bad <- dplyr::filter(ecosite_lut, !EcoSiteId_Stripped ==
+        trouble_ids)
+    EcoSites_Update <- dplyr::mutate(ecosite_lut_drop_bad, EcologicalSiteId = EcoSiteId_Stripped)
+    LMF_EcoSite <- merge(LMF, EcoSites_Update, by = "EcologicalSiteId")
+    LMF_EcoSite <- dplyr::select(LMF_EcoSite, -EcologicalSiteId)
+    LMF_EcoSite <- dplyr::rename(LMF_EcoSite, EcologicalSiteId = new_es_symbol)
+    LMF_EcoSite <- dplyr::select(LMF_EcoSite, -EcoSiteId_Stripped)
+    TerrADat[setdiff(names(LMF_EcoSite), names(TerrADat))] <- NA
+    LMF_EcoSite[setdiff(names(TerrADat), names(LMF_EcoSite))] <- NA
+    TerrADat[setdiff(names(LMF_EcoSite), names(TerrADat))] <- NA
+    LMF_EcoSite[setdiff(names(TerrADat), names(LMF_EcoSite))] <- NA
+    TDat_LMF <- rbind(TerrADat, LMF_EcoSite)
+    TDat_LMF$DateVisited <- sub("^(\\d{4}).*$", "\\1", TDat_LMF$DateVisited)
+    TDat_LMF <- TDat_LMF \%>\% dplyr::rename(Year = DateVisited)
+    EDIT_rename <- EDIT \%>\% rename(EcologicalSiteId = new_es_symbol)
+    output <- merge(TDat_LMF, EDIT_rename, by = "EcologicalSiteId",
+        all = TRUE)
+    output <- output \%>\% dplyr::select(-EcoSiteId_Stripped)
+    return(output)
+  }
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
+\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
