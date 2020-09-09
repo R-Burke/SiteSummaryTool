@@ -46,11 +46,11 @@ Rachel Burke, ecologist/analyst @ Jornada
 }
 \examples{
 # If external:
-Combine_AIM_LMF(TerrADat_Path = "~/gdbs/TerrADat.gdb",
+TDat_LMF <- Combine_AIM_LMF(TerrADat_Path = "~/gdbs/TerrADat.gdb",
                    EDIT_List_Path = "~/Projects/ESSTool/Defaults",
                    Internal = FALSE)
 # If internal:
-Combine_AIM_LMF(TerrADat_Path = NULL,
+TDat_LMF <- Combine_AIM_LMF(TerrADat_Path = NULL,
                    EDIT_List_Path = "~/Projects/ESSTool/Defaults",
                    Internal = TRUE)
 
