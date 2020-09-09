@@ -5,15 +5,18 @@
 %%  ~~function to do ... ~~
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Puts TerrADat (Assessment, Inventory, and Monitoring dataset) and LMF (Landscape Monitoring Framework dataset) in the same format, adds R or F prefix to EcologicalSiteId for LMF based on the official ecological site list from EDIT, and merges the two datasets into one. Returns dataframe.
 }
 \usage{
-Combine_AIM_LMF(x)
+Combine_AIM_LMF(TerrADat_Path, EDIT_List_Path, Internal)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
+  \item{TerrADat_Path}{file path to the TerrADat geodatabase. Set to NULL if you are internal (within Bureau of Land Management network/vpn)
+}
+  \item{EDIT_List_Path}{file path to the .csv with list of formal ecological site ids (on the sharepoint with Site Summary Tool template)
+}
+  \item{Internal}{logical. TRUE if within BLM network/on vpn. FALSE if accessing TerrADat via external geodatabase.
 }
 }
 \details{
@@ -30,7 +33,7 @@ Combine_AIM_LMF(x)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Rachel Burke, ecologist/analyst @ Jornada
 }
 \note{
 %%  ~~further notes~~
@@ -42,16 +45,12 @@ Combine_AIM_LMF(x)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+# If external:
+Combine_AIM_LMF(TerrADat_Path = "~/gdbs/TerrADat.gdb",
+                   EDIT_List_Path = "~/Projects/ESSTool/Defaults",
+                   Internal = FALSE)
+# If internal:
+Combine_AIM_LMF(TerrADat_Path = NULL,
+                   EDIT_List_Path = "~/Projects/ESSTool/Defaults",
+                   Internal = TRUE)
 
-## The function is currently defined as
-function (x)
-{
-  }
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
