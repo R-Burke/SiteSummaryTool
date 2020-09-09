@@ -2,7 +2,7 @@
 \alias{Combine_AIM_LMF}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Combine_AIM_LMF
 }
 \description{
 Puts TerrADat (Assessment, Inventory, and Monitoring dataset) and LMF (Landscape Monitoring Framework dataset) in the same format, adds R or F prefix to EcologicalSiteId for LMF based on the official ecological site list from EDIT, and merges the two datasets into one. Returns dataframe.
