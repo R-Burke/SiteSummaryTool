@@ -1,19 +1,21 @@
 \name{Combine_AIM_LMF_Species}
 \alias{Combine_AIM_LMF_Species}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Combine_AIM_LMF_Species
+\title{
 %%  ~~function to do ... ~~
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-Combine_AIM_LMF_Species(x)
+Combine_AIM_LMF_Species(TerrADat_Path, Internal)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
+  \item{TerrADat_Path}{
+Path to TerrADat geodatabase. Set to NULL if on Bureau of Land Management network/vpn. 
+}
+  \item{Internal}{logical. TRUE if within BLM network/on vpn. FALSE if accessing TerrADat via external geodatabase.
 }
 }
 \details{
@@ -30,7 +32,7 @@ Combine_AIM_LMF_Species(x)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Rachel Burke, ecologist/analyst @ Jornada
 }
 \note{
 %%  ~~further notes~~
@@ -42,13 +44,33 @@ Combine_AIM_LMF_Species(x)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
+# If accessing TerrADat via external geodatabase:
+Species_Indicator <- Combine_AIM_LMF_Species(TerrADat_Path = 
+                     "TerrADat_Path"~/gdbs/TerrADat.gdb"", Internal = FALSE)
+          
+# If accessing TerrADat via BLM network:
+Species_Indicator <- Combine_AIM_LMF_Species(TerrADat_Path = NULL, Internal = TRUE)
+          
 ## The function is currently defined as
-function (x)
+function (TerrADat_Path, Internal) 
 {
+    if (!Internal) {
+        TerrADatSpecies <- sf::st_read(dsn = TerrADat_Path, layer = "TerrADatSpeciesIndicators")
+        LMFSpecies <- sf::st_read(dsn = TerrADat_Path, layer = "LMFSpeciesIndicators")
+        TerrADatSpecies <- as.data.frame(TerrADatSpecies)
+        TerrADatSpecies <- dplyr::select(TerrADatSpecies, -Shape)
+        LMFSpecies <- as.data.frame(LMFSpecies)
+        LMFSpecies <- dplyr::select(LMFSpecies, -Shape)
+    }
+    if (Internal) {
+        TerrADatSpecies <- TerrADatSpecies
+        LMFSpecies <- LMFSpecies
+        SpeciesList <- SpeciesList
+    }
+    LMFSpecies[setdiff(names(TerrADatSpecies), names(LMFSpecies))] <- NA
+    TerrADatSpecies[setdiff(names(LMFSpecies), names(TerrADatSpecies))] <- NA
+    output <- rbind(TerrADatSpecies, LMFSpecies)
+    return(output)
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
