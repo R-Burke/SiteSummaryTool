@@ -50,7 +50,7 @@ SpeciesList <- ReadSpeciesList(TerrADat_Path = "~/gdbs/TerrADat.gdb", Internal =
 SpeciesList <- ReadSpeciesList(TerrADat_Path = NULL, Internal = TRUE)
 
 ## The function is currently defined as
-function (TerrADat_Path, Internal)
+function (TerrADat_Path, Internal){
   if(!Internal){
     SpeciesList<- sf::st_read(dsn = TerrADat_Path ,
                               layer = "tblStateSpecies")}
