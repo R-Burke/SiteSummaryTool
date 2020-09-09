@@ -2,18 +2,20 @@
 \alias{ReadSpeciesList}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ReadSpeciesList
-%%  ~~function to do ... ~~
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-ReadSpeciesList(x)
+ReadSpeciesList(TerrADat_Path, Internal)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
+  \item{TerrADat_Path}{
+file path to the TerrADat geodatabase. Set to NULL if you are internal (within Bureau of Land Management network/vpn)
+}
+  \item{Internal}{
+logical. TRUE if within BLM network/on vpn. FALSE if accessing TerrADat via external geodatabase.
 }
 }
 \details{
@@ -30,7 +32,7 @@ ReadSpeciesList(x)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Rachel Burke, ecologist/analyst @ Jornada
 }
 \note{
 %%  ~~further notes~~
@@ -42,14 +44,23 @@ ReadSpeciesList(x)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+#If working on external geodatabase:
+SpeciesList <- ReadSpeciesList(TerrADat_Path = "~/gdbs/TerrADat.gdb", Internal = FALSE)
+#If working within BLM network:
+SpeciesList <- ReadSpeciesList(TerrADat_Path = NULL, Internal = TRUE)
 
 ## The function is currently defined as
-function (x)
-{
+function (TerrADat_Path, Internal)
+  if(!Internal){
+    SpeciesList<- sf::st_read(dsn = TerrADat_Path ,
+                              layer = "tblStateSpecies")}
+  if(Internal){
+    SpeciesList <- SpeciesList
   }
+
+  SpeciesList <- SpeciesList %>% dplyr::rename(Species = SpeciesCode)
+  return(SpeciesList)
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
