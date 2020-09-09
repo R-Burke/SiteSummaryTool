@@ -1,11 +1,11 @@
 \name{Combine_AIM_LMF_Species}
 \alias{Combine_AIM_LMF_Species}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{
+\title{Combine_AIM_LMF_Species
 %%  ~~function to do ... ~~
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Combines species indicators for TerrADat and LMF datasets. Returns a dataframe. 
 }
 \usage{
 Combine_AIM_LMF_Species(TerrADat_Path, Internal)
