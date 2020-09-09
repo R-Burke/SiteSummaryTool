@@ -8,12 +8,12 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-PlotMetadata(x)
+PlotMetadata(dataframe)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
+  \item{dataframe}{
+  = TDat_LMF or EcoSitePlots
 }
 }
 \details{
@@ -30,7 +30,7 @@ PlotMetadata(x)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Rachel Burke, ecologist/analyst @ Jornada
 }
 \note{
 %%  ~~further notes~~
@@ -42,13 +42,27 @@ PlotMetadata(x)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+# To plot number of plots per year nationally:
+PlotMetadata(dataframe = TDat_LMF)
+# TDat_LMF is returned object from Combine_AIM_LMF()
+# To plot number of plots per year in the your ecological site(s):
+PlotMetadata(dataframe = EcoSitePlots)
+# EcoSitePlots is returned object from Combine_AIM_LMF() and SubsetEcologicalSite()
 
 ## The function is currently defined as
-function (x)
+function (dataframe)
 {
+    Plots <- c("Plots")
+    Year_Palette <- (scales::seq_gradient_pal("grey85", "grey18",
+        "Lab"))(seq(0, 1, length.out = length(unique(dataframe$Year))))
+    Plots_Simple <- dataframe \%>\% dplyr::select(PrimaryKey, Year) \%>\%
+        dplyr::mutate(PlotsPerYear = Plots) \%>\% dplyr::arrange(Year)
+    PlotsPerYear <- ggplot(Plots_Simple, aes(Plots, text = stat(count))) +
+        geom_bar(stat = "count", position = position_stack(reverse = TRUE),
+            aes(fill = Year), width = 0.2, ) + scale_fill_manual(values = Year_Palette) +
+        ggtitle("Plots Per Year") + coord_flip() + theme(axis.text.y = element_blank())
+    PlotsPerYear <- plotly::ggplotly(PlotsPerYear, tooltip = "text")
+    return(PlotsPerYear)
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
