@@ -47,7 +47,7 @@ Rachel Burke, ecologist/analyst @ Jornada
 EcoSitePlots <- SubsetEcologicalSite(TDat_LMF, EcologicalSiteId)
 
 ## The function is currently defined as
-function (TDat_LMF, EcologicalSiteId)
+function (TDat_LMF, EcologicalSiteId){
 
   EcoSitePlots <- TDat_LMF[TDat_LMF[["EcologicalSiteId"]] %in% EcologicalSiteId, ]
 # Add sagebrush indicator
