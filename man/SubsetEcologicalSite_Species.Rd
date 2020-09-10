@@ -17,7 +17,6 @@ Combined TerrADat and LMF dataframe, subset to your ecological site. Returned ob
   \item{Species_Indicator}{
 Combined AIM and LMF species indicator. Returned object from Combine_AIM_LMF_Species().
 }
-}
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
@@ -49,10 +48,10 @@ Rachel Burke, ecologist/analyst @ Jornada
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (EcoSitePlots, Species_Indicator) 
+function (EcoSitePlots, Species_Indicator)
 {
     EcoSite_PKs <- EcoSitePlots$PrimaryKey
-    Species_plots_ecosite <- Species_Indicator[(Species_Indicator[["PrimaryKey"]] \%in\% 
+    Species_plots_ecosite <- Species_Indicator[(Species_Indicator[["PrimaryKey"]] \%in\%
         EcoSite_PKs), ]
     return(Species_plots_ecosite)
   }
