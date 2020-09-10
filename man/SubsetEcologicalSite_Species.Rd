@@ -17,6 +17,7 @@ Combined TerrADat and LMF dataframe, subset to your ecological site. Returned ob
   \item{Species_Indicator}{
 Combined AIM and LMF species indicator. Returned object from Combine_AIM_LMF_Species().
 }
+}
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
