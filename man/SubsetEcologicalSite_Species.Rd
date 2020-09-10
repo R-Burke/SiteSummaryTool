@@ -2,18 +2,20 @@
 \alias{SubsetEcologicalSite_Species}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{SubsetEcologicalSite_Species
-%%  ~~function to do ... ~~
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Subsets national AIM and LMF species indicators by plot to those that fall within your specified ecological site(s)
 }
 \usage{
-SubsetEcologicalSite_Species(x)
+SubsetEcologicalSite_Species(EcoSitePlots, Species_Indicator)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
+  \item{EcoSitePlots}{
+Combined TerrADat and LMF dataframe, subset to your ecological site. Returned object from consecutive Combine_AIM_LMF and SubsetEcologicalSite functions. This is required to obtain a list of PrimaryKeys associated with each plot within the specified ecological site(s).
+}
+  \item{Species_Indicator}{
+Combined AIM and LMF species indicator. Returned object from Combine_AIM_LMF_Species().
 }
 }
 \details{
@@ -30,7 +32,7 @@ SubsetEcologicalSite_Species(x)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Rachel Burke, ecologist/analyst @ Jornada
 }
 \note{
 %%  ~~further notes~~
@@ -47,8 +49,12 @@ SubsetEcologicalSite_Species(x)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (x)
+function (EcoSitePlots, Species_Indicator) 
 {
+    EcoSite_PKs <- EcoSitePlots$PrimaryKey
+    Species_plots_ecosite <- Species_Indicator[(Species_Indicator[["PrimaryKey"]] \%in\% 
+        EcoSite_PKs), ]
+    return(Species_plots_ecosite)
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
