@@ -2,7 +2,6 @@
 \alias{SummaryFigures}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{SummaryFigures
-%%  ~~function to do ... ~~
 }
 \description{
 Returns a static or interactive (plotly-friendly) ggplot boxplot summarizing cover values of AIM&LMF plots across your ecological site(s) based on summary variables (Growth habit, noxious vs. non-noxious, individual species, ground cover values (total foliar, rock, litter, bare soil), canopy gap size classes, and soil stability values.)}
@@ -15,7 +14,8 @@ SummaryFigures(SpeciesList, Species_plots_ecosite, EcologicalSiteId, SummaryVar,
 Official species list. Returned output from function ReadSpeciesList()
 }
   \item{Species_plots_ecosite}{
-Combined AIM and LMF species indicator, subset to your ecological site(s). Returned output from Combine_AIM_LMF_Species and SubsetEcologicalSite_Species.}
+Combined AIM and LMF species indicator, subset to your ecological site(s). Returned output from Combine_AIM_LMF_Species and SubsetEcologicalSite_Species.
+}
   \item{EcologicalSiteId}{
 Full ecological site id, list of ecological sites, or object
 }
