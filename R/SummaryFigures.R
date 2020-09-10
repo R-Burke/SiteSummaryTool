@@ -21,7 +21,7 @@ Full ecological site id, list of ecological sites, or object
   \item{SummaryVar}{
 c("GrowthHabitSub", "Noxious", "Species", "GroundCover", "Gap", "SoilStability")}
   \item{Interactive}{
-logical. If TRUE, boxplot aesthetics will be set up for interactive plotly::ggplotly object. If FALSE, will return static box plot.}
+logical. If TRUE, boxplot aesthetics will be set up for interactive plotly::ggplotly object. If FALSE, will return static box plot.
 }
 \details{
 If SummaryVar == "GrowthHabitSub", returns a list of plots that must be called on- boxplots are broken up by growth habit. Faceting rows are duration (annual vs. perennial). Y values are percent cover. See example for how to call on plot.
