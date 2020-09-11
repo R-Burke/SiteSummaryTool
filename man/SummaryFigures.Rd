@@ -20,7 +20,8 @@ Combined AIM and LMF species indicator, subset to your ecological site(s). Retur
 Full ecological site id, list of ecological sites, or object
 }
   \item{SummaryVar}{
-c("GrowthHabitSub", "Noxious", "Species", "GroundCover", "Gap", "SoilStability")}
+c("GrowthHabitSub", "Noxious", "Species", "GroundCover", "Gap", "SoilStability")
+ }
   \item{Interactive}{
 logical. If TRUE, boxplot aesthetics will be set up for interactive plotly::ggplotly object. If FALSE, will return static box plot.
 }
@@ -465,7 +466,7 @@ if(SummaryVar == "SoilStability"){
 return(Plots)
 }
 }
-}
+
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
