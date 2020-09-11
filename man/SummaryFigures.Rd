@@ -2,10 +2,10 @@
 \alias{SummaryFigures}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{SummaryFigures
-%%  ~~function to do ... ~~
 }
 \description{
-Returns a static or interactive (plotly-friendly) ggplot boxplot summarizing cover values of AIM&LMF plots across your ecological site(s) based on summary variables (Growth habit, noxious vs. non-noxious, individual species, ground cover values (total foliar, rock, litter, bare soil), canopy gap size classes, and soil stability values.)}
+Returns a static or interactive (plotly-friendly) ggplot boxplot summarizing cover values of AIM&LMF plots across your ecological site(s) based on summary variables (Growth habit, noxious vs. non-noxious, individual species, ground cover values (total foliar, rock, litter, bare soil), canopy gap size classes, and soil stability values.)
+}
 \usage{
 SummaryFigures(SpeciesList, Species_plots_ecosite, EcologicalSiteId, SummaryVar, Interactive)
 }
@@ -465,6 +465,8 @@ if(SummaryVar == "SoilStability"){
 return(Plots)
 }
 }
+}
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
