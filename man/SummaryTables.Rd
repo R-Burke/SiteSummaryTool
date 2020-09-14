@@ -1,19 +1,26 @@
 \name{SummaryTables}
 \alias{SummaryTables}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{SummaryTables
-%%  ~~function to do ... ~~
-}
+\title{
+SummaryTables}
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Produces a DT::datatable of cover summaries for species, growth habit, noxious status, woody vs. non-woody, sage-grouse group, preferred forbs for sage-grouse, ground cover indicators, canopy gap, as well as soil stability ratings, and presence of trace species. Tables can be summarized across the entire ecological site(s), or within each individual plot. Outputs are html objects that can be directly downloaded to Excel.
 }
 \usage{
-SummaryTables(x)
+SummaryTables(EcoSitePlots, Species_plots_ecosite, SummaryVar, SummarizeBy)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
+  \item{EcoSitePlots}{
+Combined TerrADat and LMF dataframe, subset to your ecological site. Returned object from consecutive Combine_AIM_LMF and SubsetEcologicalSite functions.
+}
+  \item{Species_plots_ecosite}{
+Combined AIM and LMF species indicator, subset to your ecological site(s). Returned output from Combine_AIM_LMF_Species and SubsetEcologicalSite_Species.
+}
+  \item{SummaryVar}{
+c("Species", "GrowthHabitSub", "Noxious", "Woody", "SageGrouseGroup", "PreferredForb", "TraceSpecies", "GroundCover", "Gap", "SoilStability")}
+  \item{SummarizeBy}{
+c("Plot", "EcologicalSite")
 }
 }
 \details{
@@ -30,7 +37,7 @@ SummaryTables(x)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Rachel Burke, ecologist/analyst @ Jornada
 }
 \note{
 %%  ~~further notes~~
@@ -42,13 +49,313 @@ SummaryTables(x)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+#To summarize ground cover variables across each individual plot:
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite,
+              SummaryVar = "GroundCover",
+              SummarizeBy = "Plot")
+
+#To summarize ground cover variables across an ecological site(s):
+
+SummaryTables(EcoSitePlots, Species_plots_ecosite,
+              SummaryVar = "GroundCover",
+              SummarizeBy = "EcologicalSite")
 
 ## The function is currently defined as
-function (x)
+function (EcoSitePlots, Species_plots_ecosite, SummaryVar, SummarizeBy)
 {
+    SpeciesList <- SpeciesList \%>\% dplyr::select(Species, ScientificName,
+        CommonName, Family, SpeciesState, SynonymOf, UpdatedSpeciesCode,
+        SpeciesState) \%>\% dplyr::mutate(link = paste("https://plants.sc.egov.usda.gov/core/profile?symbol=",
+        Species, sep = ""))
+    Species_plots_ecosite <- merge(Species_plots_ecosite, SpeciesList,
+        by = c("Species", "SpeciesState")) \%>\% dplyr::select(Species,
+        ScientificName, CommonName, Family, PrimaryKey, PlotID,
+        AH_SpeciesCover, AH_SpeciesCover_n, Hgt_Species_Avg,
+        Hgt_Species_Avg_n, GrowthHabit, GrowthHabitSub, Duration,
+        Noxious, SG_Group, link, SpeciesState, SynonymOf, UpdatedSpeciesCode) \%>\%
+        dplyr::mutate_if(is.numeric, round, digits = 2)
+    Species_plots_ecosite$Noxious <- gsub("YES", "Yes", Species_plots_ecosite$Noxious)
+    Species_plots_ecosite$Noxious <- gsub("NO", "No", Species_plots_ecosite$Noxious)
+    RichnessPresent <- Species_plots_ecosite \%>\% filter(is.na(AH_SpeciesCover))
+    LPI_Present <- Species_plots_ecosite \%>\% filter(AH_SpeciesCover >
+        0)
+    LPI_Present_String <- unique(LPI_Present$Species)
+    RichnessSpecies_Only <- RichnessPresent[!(RichnessPresent[["Species"]] \%in\%
+        LPI_Present_String), ]
+    TraceCover_List <- unique(RichnessSpecies_Only$Species)
+    TraceSpeciesCover <- Species_plots_ecosite[Species_plots_ecosite[["Species"]] \%in\%
+        TraceCover_List, ]
+    TraceCover_Table_SpList <- TraceSpeciesCover \%>\% dplyr::select(Species,
+        ScientificName, Family, GrowthHabit, GrowthHabitSub,
+        Duration, Noxious, SG_Group, SynonymOf, CommonName, UpdatedSpeciesCode,
+        link) \%>\% unique()
+    if (SummaryVar == "Species" & SummarizeBy == "Plot") {
+        Species_plots_ecosite$Species <- paste0("<a href='",
+            Species_plots_ecosite$link, "'>", Species_plots_ecosite$Species,
+            "</a>")
+        table <- Species_plots_ecosite \%>\% select(-link) \%>\%
+            DT::datatable(escape = FALSE, extensions = "Buttons",
+                filter = "top", options = list(scrollX = TRUE,
+                  dom = "Bfrtip", buttons = list(list(extend = "collection",
+                    buttons = c("csv", "excel"), text = "Download Table"))),
+                caption = (paste("Percent Cover by Species by Plot within ",
+                  toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "Species" & SummarizeBy == "EcologicalSite") {
+        Species_cover_summary <- Species_plots_ecosite \%>\% filter(!is.na(AH_SpeciesCover)) \%>\%
+            mutate(Tally = 1) \%>\% group_by(Species, GrowthHabit,
+            GrowthHabitSub, Duration, Noxious, ScientificName,
+            CommonName, SG_Group, link) \%>\% summarize(AveragePercentCover = mean(AH_SpeciesCover),
+            StandardDeviation = sd(AH_SpeciesCover), MinCover = min(AH_SpeciesCover),
+            MaxCover = max(AH_SpeciesCover), n = sum(Tally)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% dplyr::select(Species,
+            ScientificName, AveragePercentCover, StandardDeviation,
+            MinCover, MaxCover, n, GrowthHabit, GrowthHabitSub,
+            Duration, Noxious, CommonName, SG_Group, link)
+        Species_cover_summary$Species <- paste0("<a href='",
+            Species_cover_summary$link, "'>", Species_cover_summary$Species,
+            "</a>")
+        table <- Species_cover_summary \%>\% select(-link) \%>\%
+            DT::datatable(escape = FALSE, extensions = "Buttons",
+                filter = "top", options = list(scrollX = TRUE,
+                  dom = "Bfrtip", buttons = list(list(extend = "collection",
+                    buttons = c("csv", "excel"), text = "Download Table"))),
+                caption = (paste("Average Percent Cover Values Across",
+                  toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "GrowthHabitSub" & SummarizeBy == "Plot") {
+        table <- Species_plots_ecosite \%>\% group_by(PrimaryKey,
+            PlotID, GrowthHabitSub, Duration) \%>\% summarize(PercentCover = sum(AH_SpeciesCover)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% filter(!is.na(GrowthHabitSub)) \%>\%
+            DT::datatable(extensions = "Buttons", filter = "top",
+                options = list(scrollX = TRUE, dom = "Bfrtip",
+                  buttons = list(list(extend = "collection",
+                    buttons = c("csv", "excel"), text = "Download Table"))),
+                caption = (paste("Percent Cover by Structure and Functional Group by Plot  within ",
+                  toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "GrowthHabitSub" & SummarizeBy == "EcologicalSite") {
+        table <- Species_plots_ecosite \%>\% filter(!is.na(AH_SpeciesCover)) \%>\%
+            mutate(Tally = 1) \%>\% group_by(GrowthHabitSub, Duration,
+            Tally) \%>\% summarize(AveragePercentCover = mean(AH_SpeciesCover),
+            StandardDeviation = sd(AH_SpeciesCover), MinCover = min(AH_SpeciesCover),
+            MaxCover = max(AH_SpeciesCover), n = sum(Tally)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% select(-Tally) \%>\%
+            filter(!is.na(GrowthHabitSub)) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Percent Cover by Structure and Functional Group in ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "Noxious" & SummarizeBy == "Plot") {
+        table <- EcoSitePlots \%>\% dplyr::select(PlotID, PrimaryKey,
+            AH_NoxCover, AH_NonNoxCover) \%>\% rename(NonNoxious = AH_NonNoxCover,
+            Noxious = AH_NoxCover) \%>\% dplyr::mutate_if(is.numeric,
+            round, digits = 2) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Percent Cover Noxious Versus Non by Plot within ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "Noxious" & SummarizeBy == "EcologicalSite") {
+        prep <- EcoSitePlots \%>\% dplyr::select(PlotID, PrimaryKey,
+            AH_NoxCover, AH_NonNoxCover) \%>\% dplyr::rename(NonNoxious = AH_NonNoxCover,
+            Noxious = AH_NoxCover) \%>\% gather(key = "Noxious",
+            value = Percent, NonNoxious:Noxious) \%>\% dplyr::mutate(Tally = 1)
+        prep$Noxious <- gsub("NonNoxious", "No", prep$Noxious)
+        prep$Noxious <- gsub("Noxious", "Yes", prep$Noxious)
+        table <- prep \%>\% group_by(Noxious) \%>\% summarize(AveragePercentCover = mean(Percent),
+            StandardDeviation = sd(Percent), MinCover = min(Percent),
+            MaxCover = max(Percent), n = sum(Tally)) \%>\% mutate_if(is.numeric,
+            round, digits = 2) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Percent Cover Noxious Versus Non in ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "Woody" & SummarizeBy == "Plot") {
+        table <- Species_plots_ecosite \%>\% filter(!is.na(AH_SpeciesCover)) \%>\%
+            group_by(GrowthHabit, PrimaryKey, PlotID) \%>\% summarize(PercentCover = sum(AH_SpeciesCover)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Percent Cover Woody vs. Non by Plot within: ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "Woody" & SummarizeBy == "EcologicalSite") {
+        table <- Species_plots_ecosite \%>\% filter(!is.na(AH_SpeciesCover)) \%>\%
+            mutate(Tally = 1) \%>\% group_by(GrowthHabit, Tally) \%>\%
+            summarize(AveragePercentCover = mean(AH_SpeciesCover),
+                StandardDeviation = sd(AH_SpeciesCover), MinCover = min(AH_SpeciesCover),
+                MaxCover = max(AH_SpeciesCover), n = sum(Tally)) \%>\%
+            subset(AveragePercentCover > 0) \%>\% mutate_if(is.numeric,
+            round, digits = 2) \%>\% dplyr::select(-Tally) \%>\%
+            filter(!is.na(GrowthHabit)) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Percent Cover Woody vs. Non in: ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "SageGrouseGroup" & SummarizeBy == "Plot") {
+        table <- Species_plots_ecosite \%>\% filter(!is.na(SG_Group)) \%>\%
+            filter(!is.na(AH_SpeciesCover)) \%>\% group_by(SG_Group,
+            PrimaryKey, PlotID) \%>\% summarize(PercentCover = sum(AH_SpeciesCover)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Percent Cover by Sage-Grouse Group by Plot within: ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "SageGrouseGroup" & SummarizeBy == "EcologicalSite") {
+        table <- Species_plots_ecosite \%>\% filter(!is.na(SG_Group)) \%>\%
+            filter(!is.na(AH_SpeciesCover)) \%>\% mutate(Tally = 1) \%>\%
+            group_by(SG_Group, Tally) \%>\% summarize(AveragePercentCover = mean(AH_SpeciesCover),
+            StandardDeviation = sd(AH_SpeciesCover), MinCover = min(AH_SpeciesCover),
+            MaxCover = max(AH_SpeciesCover), n = sum(Tally)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% dplyr::select(-Tally) \%>\%
+            DT::datatable(extensions = "Buttons", filter = "top",
+                options = list(scrollX = TRUE, dom = "Bfrtip",
+                  buttons = list(list(extend = "collection",
+                    buttons = c("csv", "excel"), text = "Download Table"))),
+                caption = (paste("Percent Cover by Sage-Grouse Group in ",
+                  toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "PreferredForb" & SummarizeBy == "Plot") {
+        table <- Species_plots_ecosite \%>\% mutate(PreferredForb = (SG_Group ==
+            "PreferredForb")) \%>\% subset(PreferredForb == TRUE) \%>\%
+            subset(AH_SpeciesCover > 0) \%>\% filter(!is.na(AH_SpeciesCover)) \%>\%
+            group_by(Species, PrimaryKey, PlotID) \%>\% summarize(PercentCover = sum(AH_SpeciesCover)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Percent Cover by Preferred Forb By Plot within ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "PreferredForb" & SummarizeBy == "EcologicalSite") {
+        table <- Species_plots_ecosite \%>\% mutate(PreferredForb = (SG_Group ==
+            "PreferredForb")) \%>\% subset(PreferredForb == TRUE) \%>\%
+            subset(AH_SpeciesCover > 0) \%>\% filter(!is.na(AH_SpeciesCover)) \%>\%
+            filter(!is.na(AH_SpeciesCover)) \%>\% mutate(Tally = 1) \%>\%
+            group_by(Species, Tally) \%>\% summarize(AveragePercentCover = mean(AH_SpeciesCover),
+            StandardDeviation = sd(AH_SpeciesCover), MinCover = min(AH_SpeciesCover),
+            MaxCover = max(AH_SpeciesCover), n = sum(Tally)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% dplyr::select(-Tally) \%>\%
+            DT::datatable(extensions = "Buttons", filter = "top",
+                options = list(scrollX = TRUE, dom = "Bfrtip",
+                  buttons = list(list(extend = "collection",
+                    buttons = c("csv", "excel"), text = "Download Table"))),
+                caption = (paste("Percent Cover by Preferred Forb in ",
+                  toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "TraceSpecies" & SummarizeBy == "Plot") {
+        RichnessPresent <- RichnessPresent \%>\% dplyr::select(Species,
+            ScientificName, GrowthHabit, GrowthHabitSub, Duration,
+            Noxious, SG_Group, PrimaryKey, PlotID, link)
+        RichnessPresent$Species <- paste0("<a href='", RichnessPresent$link,
+            "'>", RichnessPresent$Species, "</a>")
+        table <- RichnessPresent \%>\% select(-link) \%>\% DT::datatable(escape = FALSE,
+            extensions = "Buttons", filter = "top", options = list(scrollX = TRUE,
+                dom = "Bfrtip", buttons = list(list(extend = "collection",
+                  buttons = c("csv", "excel"), text = "Download Table"))),
+            caption = (paste("Trace Species by Plot within ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "TraceSpecies" & SummarizeBy == "EcologicalSite") {
+        TraceCover_Table_SpList$Species <- paste0("<a href='",
+            TraceCover_Table_SpList$link, "'>", TraceCover_Table_SpList$Species,
+            "</a>")
+        table <- TraceCover_Table_SpList \%>\% arrange(Species) \%>\%
+            select(-link) \%>\% DT::datatable(escape = FALSE, extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Trace species in ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "GroundCover" & SummarizeBy == "Plot") {
+        table <- EcoSitePlots \%>\% dplyr::select(PlotID, PrimaryKey,
+            BareSoilCover, TotalFoliarCover, FH_TotalLitterCover,
+            FH_RockCover) \%>\% gather(key = Indicator, value = Percent,
+            BareSoilCover:FH_RockCover) \%>\% mutate(Tally = 1) \%>\%
+            group_by(PlotID, PrimaryKey, Indicator) \%>\% mutate_if(is.numeric,
+            round, digits = 2) \%>\% select(-Tally) \%>\% rename(PercentCover = Percent) \%>\%
+            DT::datatable(extensions = "Buttons", filter = "top",
+                options = list(scrollX = TRUE, dom = "Bfrtip",
+                  buttons = list(list(extend = "collection",
+                    buttons = c("csv", "excel"), text = "Download Table"))),
+                caption = (paste("Percent cover by plot within ",
+                  toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "GroundCover" & SummarizeBy == "EcologicalSite") {
+        table <- EcoSitePlots \%>\% dplyr::select(PlotID, PrimaryKey,
+            BareSoilCover, TotalFoliarCover, FH_TotalLitterCover,
+            FH_RockCover) \%>\% gather(key = Indicator, value = Percent,
+            BareSoilCover:FH_RockCover) \%>\% mutate(Tally = 1) \%>\%
+            group_by(Indicator) \%>\% summarize(AveragePercentCover = mean(Percent),
+            Standard_Deviation = sd(Percent), Low = min(Percent),
+            High = max(Percent), n = sum(Tally)) \%>\% mutate_if(is.numeric,
+            round, digits = 2) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Average percent cover in ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "Gap" & SummarizeBy == "Plot") {
+        table <- EcoSitePlots \%>\% dplyr::select(PlotID, PrimaryKey,
+            GapCover_25_50, GapCover_51_100, GapCover_101_200,
+            GapCover_200_plus, GapCover_25_plus) \%>\% gather(key = Gap_Class_cm,
+            value = Percent, GapCover_25_50:GapCover_25_plus) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% group_by(PlotID,
+            PrimaryKey) \%>\% mutate_if(is.numeric, round, digits = 2) \%>\%
+            rename(Percent_Cover = Percent) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Percent cover by canopy gap class by plot within ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "Gap" & SummarizeBy == "EcologicalSite") {
+        table <- EcoSitePlots \%>\% dplyr::select(PlotID, PrimaryKey,
+            GapCover_25_50, GapCover_51_100, GapCover_101_200,
+            GapCover_200_plus, GapCover_25_plus) \%>\% gather(key = Gap_Class_cm,
+            value = Percent, GapCover_25_50:GapCover_25_plus) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% group_by(Gap_Class_cm) \%>\%
+            summarize(AveragePercentCover = mean(Percent), StandardDeviation = sd(Percent),
+                MinPercentCover = min(Percent), MaxPercentCover = max(Percent)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Percent cover by canopy gap class in: ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "SoilStability" & SummarizeBy == "Plot") {
+        table <- EcoSitePlots \%>\% dplyr::select(PlotID, PrimaryKey,
+            SoilStability_All, SoilStability_Protected, SoilStability_Unprotected) \%>\%
+            gather(key = Veg, value = Rating, SoilStability_All:SoilStability_Unprotected) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% group_by(PrimaryKey,
+            PlotID) \%>\% mutate_if(is.numeric, round, digits = 2) \%>\%
+            DT::datatable(extensions = "Buttons", filter = "top",
+                options = list(scrollX = TRUE, dom = "Bfrtip",
+                  buttons = list(list(extend = "collection",
+                    buttons = c("csv", "excel"), text = "Download Table"))),
+                caption = (paste("Soil stability ratings by plot in: ",
+                  toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    if (SummaryVar == "SoilStability" & SummarizeBy == "EcologicalSite") {
+        table <- EcoSitePlots \%>\% dplyr::select(PlotID, PrimaryKey,
+            SoilStability_All, SoilStability_Protected, SoilStability_Unprotected) \%>\%
+            gather(key = Veg, value = Rating, SoilStability_All:SoilStability_Unprotected) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% group_by(Veg) \%>\%
+            summarize(AverageSoilStability = mean(Rating, na.rm = TRUE),
+                StandardDeviation = sd(Rating, na.rm = TRUE),
+                MinSoilStability = min(Rating, na.rm = TRUE),
+                MaxSoilStability = max(Rating, na.rm = TRUE)) \%>\%
+            mutate_if(is.numeric, round, digits = 2) \%>\% DT::datatable(extensions = "Buttons",
+            filter = "top", options = list(scrollX = TRUE, dom = "Bfrtip",
+                buttons = list(list(extend = "collection", buttons = c("csv",
+                  "excel"), text = "Download Table"))), caption = (paste("Average soil stability ratings in: ",
+                toString(EcologicalSiteId))), rownames = FALSE)
+    }
+    return(table)
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
