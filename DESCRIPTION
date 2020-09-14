@@ -22,5 +22,6 @@ Imports: devtools,
   rworldxtra, 
   plotly, 
   htmltools,
-  ggplot2 (== 3.2.1)
+  ggplot2 (== 3.2.1),
+  pandoc (>= 2.7.2)
 
