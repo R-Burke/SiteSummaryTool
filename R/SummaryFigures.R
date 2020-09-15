@@ -52,7 +52,7 @@ if(Interactive){
                                            drop = TRUE), 
                                  FUN = function(Species_plots_ecosite){
                                    current_plot <- ggplot(Species_plots_ecosite , 
-                                                          aes(x = SummaryVar , 
+                                                          aes(x = GrowthHabitSub, 
                                                               y = AH_SpeciesCover, 
                                                               text = paste("Primary Key: " , PrimaryKey , 
                                                                            "Plot ID: " , PlotID , "Species: " , 
@@ -68,7 +68,7 @@ if(Interactive){
                                            axis.line.y = element_blank()) + theme(panel.grid.major.y = element_blank() ,
                                                                                   axis.title.y = element_blank()) +
                                      ggtitle(paste0("Percent Cover by Functional Group: " , 
-                                                    Species_plots_ecosite$SummaryVar,
+                                                    Species_plots_ecosite$GrowthHabitSub,
                                                     toString(EcologicalSiteId), sep = " ")) +
                                      coord_flip() + facet_grid(cols = vars(GrowthHabitSub) ,
                                                                rows = vars(Duration) ,
@@ -81,7 +81,7 @@ if(Interactive){
 if(!Interactive){
    Plots <- lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[[SummaryVar]] , drop = TRUE), 
                              FUN = function(Species_plots_ecosite){
-                               current_plot <- ggplot(Species_plots_ecosite , aes(x = SummaryVar , y = AH_SpeciesCover)) +
+                               current_plot <- ggplot(Species_plots_ecosite , aes(x = GrowthHabitSub , y = AH_SpeciesCover)) +
                                  geom_boxplot(width = .6 , outlier.shape = NA) +
                                  geom_jitter(width = .2 , size = 1.25, aes(color = Noxious)) +
                                  scale_color_manual(values = NoxNonPal_Dot) +
@@ -93,7 +93,7 @@ if(!Interactive){
                                        axis.line.y = element_blank()) + theme(panel.grid.major.y = element_blank() ,
                                                                               axis.title.y = element_blank()) +
                                  ggtitle(paste("Percent Cover by Functional Group:", 
-                                               Species_plots_ecosite$SummaryVar,
+                                               Species_plots_ecosite$GrowthHabitSub,
                                                toString(EcologicalSiteId), sep = " ")) +
                                  coord_flip() + facet_grid(cols = vars(GrowthHabitSub) ,
                                                            rows = vars(Duration) , switch = "y" ,
@@ -104,7 +104,7 @@ if(!Interactive){
 
 if(SummaryVar == "Noxious"){
   if(Interactive){
-   Plots <- Species_plots_ecosite %>% group_by(Noxious) %>% 
+     Plots <- Species_plots_ecosite %>% group_by(Noxious) %>% 
      filter(!is.na(Noxious)) %>% filter(!is.na(AH_SpeciesCover)) %>%
      ggplot((aes(x = Noxious , y = AH_SpeciesCover , 
                                              text = paste("Primary Key : " , PrimaryKey, 
@@ -157,7 +157,7 @@ if(SummaryVar == "Noxious"){
 if(SummaryVar == "Species"){
   PercentCover <- Species_plots_ecosite %>% subset(AH_SpeciesCover > 0.000000)
   if(Interactive){
-  Plots <-lapply(X = split(PercentCover, list(PercentCover$GrowthHabitSub ,                                                       PercentCover$Duration) , drop = TRUE),
+  Plots <-lapply(X = split(PercentCover, list(PercentCover$GrowthHabitSub , PercentCover$Duration) , drop = TRUE),
                                      FUN = function(PercentCover){
                                        current_plot <- ggplot(PercentCover , aes(x = Species , y = AH_SpeciesCover,
                                                                                              text = paste("PrimaryKey: ", PrimaryKey , 
