@@ -49,8 +49,10 @@ NoxNonPal_Dot <- c("grey33" , "#993300")
 if(SummaryVar == "GrowthHabitSub"){
 if(Interactive){
   Plots <-  lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[[SummaryVar]] , 
-                                           drop = TRUE), 
+                                           drop = TRUE),
+                                
                                  FUN = function(Species_plots_ecosite){
+                                   if (nrow(X) < 1) {return(NULL)}
                                    current_plot <- ggplot(Species_plots_ecosite , 
                                                           aes(x = GrowthHabitSub, 
                                                               y = AH_SpeciesCover, 
