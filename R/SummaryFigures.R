@@ -52,7 +52,7 @@ if(Interactive){
                                            drop = TRUE),
                                  
                                  FUN = function(X){
-                                   if (nrow(X) < 1) {return(NULL)}, 
+                                   if (nrow(X) < 1) {return(NULL)} 
                                    current_plot <- ggplot(X , 
                                                           aes(x = GrowthHabitSub, 
                                                               y = AH_SpeciesCover, 
