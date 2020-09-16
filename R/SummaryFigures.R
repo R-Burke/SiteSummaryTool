@@ -46,6 +46,9 @@ Species_cover_summary <- Species_plots_ecosite %>% filter(!is.na(AH_SpeciesCover
 NoxNonPal_Fill <- c("grey75"  , "#D55E00")
 NoxNonPal_Dot <- c("grey33" , "#993300")
 
+  #Remove NAs for plotting
+Species_plots_ecosite <- Species_plots_ecosite %>% filter(!is.na(AH_SpeciesCover))
+  
 if(SummaryVar == "GrowthHabitSub"){
 if(Interactive){
   Plots <-  lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[[SummaryVar]] , 
