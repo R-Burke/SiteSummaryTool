@@ -77,7 +77,9 @@ if(Interactive){
                                                                switch = "y" ,
                                                                scales = "free" , drop = TRUE)
                                    return(current_plot)
-                                 })
+                                 }
+                  )
+   Plots <- Plots[!is.null(Plots)]
 }
 
 if(!Interactive){
@@ -103,7 +105,9 @@ if(!Interactive){
                                                            scales = "free" , drop = TRUE)
                                return(current_plot)
                              })
-}}
+}
+ Plots <- Plots[!is.null(Plots)]
+}
 
 if(SummaryVar == "Noxious"){
   if(Interactive){
