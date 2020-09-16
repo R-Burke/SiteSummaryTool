@@ -50,10 +50,10 @@ if(SummaryVar == "GrowthHabitSub"){
 if(Interactive){
   Plots <-  lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[[SummaryVar]] , 
                                            drop = TRUE),
-                                 if (nrow(X) < 1) {return(NULL)}, 
-                                 FUN = function(Species_plots_ecosite){
-                       
-                                   current_plot <- ggplot(Species_plots_ecosite , 
+                                 
+                                 FUN = function(X){
+                                   if (nrow(X) < 1) {return(NULL)}, 
+                                   current_plot <- ggplot(X , 
                                                           aes(x = GrowthHabitSub, 
                                                               y = AH_SpeciesCover, 
                                                               text = paste("Primary Key: " , PrimaryKey , 
@@ -82,8 +82,9 @@ if(Interactive){
 
 if(!Interactive){
    Plots <- lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[[SummaryVar]] , drop = TRUE), 
-                             FUN = function(Species_plots_ecosite){
-                               current_plot <- ggplot(Species_plots_ecosite , aes(x = GrowthHabitSub , y = AH_SpeciesCover)) +
+                             FUN = function(X){
+                                if (nrow(X) < 1) {return(NULL)}
+                                 current_plot <- ggplot(X , aes(x = GrowthHabitSub , y = AH_SpeciesCover)) +
                                  geom_boxplot(width = .6 , outlier.shape = NA) +
                                  geom_jitter(width = .2 , size = 1.25, aes(color = Noxious)) +
                                  scale_color_manual(values = NoxNonPal_Dot) +
