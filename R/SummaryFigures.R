@@ -76,10 +76,10 @@ if(Interactive){
                                                                rows = vars(Duration) ,
                                                                switch = "y" ,
                                                                scales = "free" , drop = TRUE)
+                                   current_plot <- current_plot[!is.na(current_plot)]
                                    return(current_plot)
                                  }
                   )
-   Plots <- Plots[!is.null(Plots)]
 }
 
 if(!Interactive){
@@ -103,10 +103,11 @@ if(!Interactive){
                                  coord_flip() + facet_grid(cols = vars(GrowthHabitSub) ,
                                                            rows = vars(Duration) , switch = "y" ,
                                                            scales = "free" , drop = TRUE)
+                               
+                               current_plot <- current_plot[!is.na(current_plot)]
                                return(current_plot)
                              })
 }
- Plots <- Plots[!is.null(Plots)]
 }
 
 if(SummaryVar == "Noxious"){
