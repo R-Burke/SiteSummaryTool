@@ -51,11 +51,11 @@ Species_plots_ecosite <- Species_plots_ecosite %>% filter(!is.na(AH_SpeciesCover
   
 if(SummaryVar == "GrowthHabitSub"){
 if(Interactive){
-  Plots <-  lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[[SummaryVar]] , 
+  Plots <-  lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[["GrowthHabitSub"]] , 
                                            drop = TRUE),
                                  
                                  FUN = function(Species_plots_ecosite){
-                                   if (nrow(Species_plots_ecosite) < 1) {return(NULL)} 
+                                 
                                    current_plot <- ggplot(Species_plots_ecosite , 
                                                           aes(x = GrowthHabitSub, 
                                                               y = AH_SpeciesCover, 
@@ -79,16 +79,16 @@ if(Interactive){
                                                                rows = vars(Duration) ,
                                                                switch = "y" ,
                                                                scales = "free" , drop = TRUE)
-                                   current_plot <- current_plot[!is.na(current_plot)]
+                                   
                                    return(current_plot)
                                  }
                   )
 }
 
 if(!Interactive){
-   Plots <- lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[[SummaryVar]] , drop = TRUE), 
+   Plots <- lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[["GrowthHabitSub"]] , drop = TRUE), 
                              FUN = function(Species_plots_ecosite){
-                                if (nrow(Species_plots_ecosite) < 1) {return(NULL)}
+                             
                                  current_plot <- ggplot(Species_plots_ecosite , aes(x = GrowthHabitSub , y = AH_SpeciesCover)) +
                                  geom_boxplot(width = .6 , outlier.shape = NA) +
                                  geom_jitter(width = .2 , size = 1.25, aes(color = Noxious)) +
@@ -107,7 +107,7 @@ if(!Interactive){
                                                            rows = vars(Duration) , switch = "y" ,
                                                            scales = "free" , drop = TRUE)
                                
-                               current_plot <- current_plot[!is.na(current_plot)]
+    
                                return(current_plot)
                              })
 }
