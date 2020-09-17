@@ -9,7 +9,7 @@ HgtPrep <- Species_plots_ecosite %>% filter(!is.na(Hgt_Species_Avg)) %>%
   
 HgtPrep$Hgt_Species_Avg <- as.numeric(as.integer(HgtPrep$Hgt_Species_Avg))  
   
-HgtPrep <- HgtPrep %>% filter(Hgt_Species_Avg > 0.0000) 
+HgtPrep <- HgtPrep %>% subset(Hgt_Species_Avg > 0.0000) 
   
 
 if(SummaryVar == "Height" & GroupBy == "Species"){
