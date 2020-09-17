@@ -5,7 +5,12 @@ SummaryFigures_Height <- function(Species_plots_ecosite, EcologicalSiteId,
 NoxNonPal_Fill <- c("grey75"  , "#D55E00")
 NoxNonPal_Dot <- c("grey33" , "#993300")
 HgtPrep <- Species_plots_ecosite %>% filter(!is.na(Hgt_Species_Avg)) %>% 
-             filter(!is.na(GrowthHabitSub)) %>% filter(Hgt_Species_Avg > 0.0000) 
+             filter(!is.na(GrowthHabitSub)) 
+  
+HgtPrep$Hgt_Species_Avg <- as.numeric(as.integer(HgtPrep$Hgt_Species_Avg))  
+  
+HgtPrep <- HgtPrep %>% filter(Hgt_Species_Avg > 0.0000) 
+  
 
 if(SummaryVar == "Height" & GroupBy == "Species"){
   #Prep
