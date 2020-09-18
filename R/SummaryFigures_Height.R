@@ -7,8 +7,7 @@ NoxNonPal_Dot <- c("grey33" , "#993300")
 HgtPrep <- Species_plots_ecosite %>% filter(!is.na(Hgt_Species_Avg)) %>% 
              filter(!is.na(GrowthHabitSub)) 
   
-HgtPrep$Hgt_Species_Avg <- as.numeric(as.integer(HgtPrep$Hgt_Species_Avg))  
-  
+# Just in case  
 HgtPrep <- HgtPrep %>% subset(Hgt_Species_Avg > 0.0000) 
   
 
@@ -34,7 +33,7 @@ if(SummaryVar == "Height" & GroupBy == "Species"){
                                                               sep = "<br>"))) +
                                           geom_boxplot(width = .6 , outlier.shape = NA) +
                                           geom_jitter(width = .15 , shape = 21) +
-                                          scale_y_continuous(limits = c(0 , 100)) +
+                                          # scale_y_continuous(limits = c(0 , 100)) +
                                           theme_light() +
                                           coord_flip() + 
                                           theme(axis.text.y = element_blank() , axis.ticks.y = element_blank() ,
@@ -57,7 +56,7 @@ if(SummaryVar == "Height" & GroupBy == "Species"){
                                            geom_boxplot(width = .6 , outlier.shape = NA) +
                                            geom_jitter(width = .15 , size = 1 , aes(color = Noxious)) +
                                            scale_color_manual(values = NoxNonPal_Dot) + 
-                                           scale_y_continuous(limits = c(0 , 100)) +
+                                         # scale_y_continuous(limits = c(0 , 100)) +
                                            theme_light() +
                                            labs(x = "Species" , y = "Average Height, cm",
                                                 caption = paste("Species height in: ", toString(EcologicalSiteId), sep = "")) + 
