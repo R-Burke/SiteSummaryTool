@@ -12,7 +12,7 @@ Imports: devtools,
   withr,
   usethis,
   glue, 
-  tidyverse, 
+  tidyr, 
   dplyr,
   knitr, 
   DT, 
@@ -22,5 +22,6 @@ Imports: devtools,
   rworldxtra, 
   plotly, 
   htmltools,
-  ggplot2 (== 3.2.1)
+  ggplot2 (== 3.2.1), 
+  readxl
 
