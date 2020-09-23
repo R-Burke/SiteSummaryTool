@@ -56,7 +56,7 @@ if(Interactive){
                                  
                                  FUN = function(Species_plots_ecosite){
                                  
-                                   current_plot <- ggplot(Species_plots_ecosite , 
+                                   current_plot <- ggplot2::ggplot(Species_plots_ecosite , 
                                                           aes(x = GrowthHabitSub, 
                                                               y = AH_SpeciesCover, 
                                                               text = paste("Primary Key: " , PrimaryKey , 
@@ -89,7 +89,7 @@ if(!Interactive){
    Plots <- lapply(X = split(Species_plots_ecosite, Species_plots_ecosite[["GrowthHabitSub"]] , drop = TRUE), 
                              FUN = function(Species_plots_ecosite){
                              
-                                 current_plot <- ggplot(Species_plots_ecosite , aes(x = GrowthHabitSub , y = AH_SpeciesCover)) +
+                                 current_plot <- ggplot2::ggplot(Species_plots_ecosite , aes(x = GrowthHabitSub , y = AH_SpeciesCover)) +
                                  geom_boxplot(width = .6 , outlier.shape = NA) +
                                  geom_jitter(width = .2 , size = 1.25, aes(color = Noxious)) +
                                  scale_color_manual(values = NoxNonPal_Dot) +
@@ -117,7 +117,7 @@ if(SummaryVar == "Noxious"){
   if(Interactive){
      Plots <- Species_plots_ecosite %>% group_by(Noxious) %>% 
      filter(!is.na(Noxious)) %>% filter(!is.na(AH_SpeciesCover)) %>%
-     ggplot((aes(x = Noxious , y = AH_SpeciesCover , 
+     ggplot2::ggplot((aes(x = Noxious , y = AH_SpeciesCover , 
                                              text = paste("Primary Key : " , PrimaryKey, 
                                                     "Plot ID: " , PlotID , 
                                                     "Species: " ,  ScientificName, 
@@ -145,7 +145,7 @@ if(SummaryVar == "Noxious"){
    if(!Interactive){
      Plots <- Species_plots_ecosite %>% group_by(Noxious) %>% 
        filter(!is.na(Noxious)) %>% filter(!is.na(AH_SpeciesCover)) %>%
-               ggplot((aes(x = Noxious , y = AH_SpeciesCover))) +
+               ggplot2::ggplot((aes(x = Noxious , y = AH_SpeciesCover))) +
                geom_boxplot(width = .6 , outlier.shape = NA) +
                geom_jitter(width = .15 , size = 1.25 , aes(color = Noxious)) +
                scale_color_manual(values = NoxNonPal_Dot) +
@@ -170,7 +170,7 @@ if(SummaryVar == "Species"){
   if(Interactive){
   Plots <-lapply(X = split(PercentCover, list(PercentCover$GrowthHabitSub , PercentCover$Duration) , drop = TRUE),
                                      FUN = function(PercentCover){
-                                       current_plot <- ggplot(PercentCover , aes(x = Species , y = AH_SpeciesCover,
+                                       current_plot <- ggplot2::ggplot(PercentCover , aes(x = Species , y = AH_SpeciesCover,
                                                                                              text = paste("PrimaryKey: ", PrimaryKey , 
                                                                                                           "Plot ID: " , PlotID , "Species: " , 
                                                                                                           ScientificName , "Code: " , Species , 
@@ -202,7 +202,7 @@ if(SummaryVar == "Species"){
                                                                             PercentCover$Duration) , 
                                              drop = TRUE),
                                    FUN = function(PercentCover){
-                                     current_plot <- ggplot(PercentCover , aes(x = Species , y = AH_SpeciesCover)) +
+                                     current_plot <- ggplot2::ggplot(PercentCover , aes(x = Species , y = AH_SpeciesCover)) +
                                        geom_boxplot(width = .6 , outlier.shape = NA) +
                                        geom_jitter(width = .15 , size = 1 , aes(color = Noxious)) +
                                        scale_color_manual(values = NoxNonPal_Dot) + scale_y_continuous(limits = c(0 , 100)) +
@@ -238,7 +238,7 @@ if(SummaryVar == "GroundCover"){
     if(Interactive){
     
     Plots <- Ground_Cover_Tall %>% mutate_if(is.numeric , round , digits = 2) %>% 
-              ggplot((aes(x = Indicator , y = Percent , 
+              ggplot2::ggplot((aes(x = Indicator , y = Percent , 
                            text = paste("PlotID: " , PlotID , 
                            "PrimaryKey: " , PrimaryKey , 
                            "Indicator: " , Indicator ,
@@ -262,7 +262,7 @@ if(SummaryVar == "GroundCover"){
     
     if(!Interactive){
        Plots <- Ground_Cover_Tall %>% mutate_if(is.numeric , round , digits = 2) %>% 
-                   ggplot((aes(x = Indicator , y = Percent))) +
+                   ggplot2::ggplot((aes(x = Indicator , y = Percent))) +
                    geom_boxplot(width = .6 , outlier.shape = NA) +
                    geom_jitter(width = .15) +
                    theme_light() +
@@ -294,7 +294,7 @@ if(SummaryVar == "Gap"){
   #Plot prep
   if(Interactive){
  
-     Plots <- ggplot(data = Gap , aes(x = Gap_Class_cm , y = Percent , 
+     Plots <- ggplot2::ggplot(data = Gap , aes(x = Gap_Class_cm , y = Percent , 
                                       text = paste("PlotID: " , PlotID , 
                                             "PrimaryKey: ", PrimaryKey , 
                                             "Gap Class (cm): " , Gap_Class_cm, 
@@ -315,7 +315,7 @@ if(SummaryVar == "Gap"){
   }
   
   if(!Interactive){
-      Plots <- ggplot(data = Gap , aes(x = Gap_Class_cm , y = Percent)) +
+      Plots <- ggplot2::ggplot(data = Gap , aes(x = Gap_Class_cm , y = Percent)) +
                labs(y = "Percent Cover" , x = "Gap Size Class (cm)", 
                     caption = paste("Percent cover of canopy gap in: ", 
                                     toString(EcologicalSiteId))) +
@@ -348,7 +348,7 @@ if(SummaryVar == "SoilStability"){
     
   if(Interactive){
 
-    Plots <- ggplot(data = SoilStability , 
+    Plots <- ggplot2::ggplot(data = SoilStability , 
                     aes(x = Veg , y = Rating , 
                         text = paste("Primary Key: " , PrimaryKey,
                         "Plot ID: " , PlotID , 
@@ -371,7 +371,7 @@ if(SummaryVar == "SoilStability"){
   
   if(!Interactive){
     
-            Plots <- ggplot(data = SoilStability , 
+            Plots <- ggplot2::ggplot(data = SoilStability , 
                             aes(x = Veg , y = Rating)) +
                      labs(x = "Vegetation cover class" , 
                           y = "Soil Stability Rating",
