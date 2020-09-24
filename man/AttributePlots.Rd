@@ -22,6 +22,8 @@ Combined TerrADat and LMF dataframe. Returned from Combine_AIM_LMF()
   \item{attribute_title}{name or names of the attribute in the spaefile that you want added as field in TDat_LMF (i.e. "Allot_name", or c("Allot_name", "Allot_no", "Pasture_name")
  }
   \item{attribute_name}{optional. If included, will subset all data by this feature (i.e. the name of a specific allotment)
+}
+}
    
 \details{
 %%  ~~ If necessary, more details than the description above ~~
