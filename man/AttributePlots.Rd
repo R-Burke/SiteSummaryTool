@@ -55,7 +55,7 @@ TDat_LMF_Attributed <- AttributePlots(TDat_LMF,  shapefile_name, shapefile_path,
                            attribute_title, attribute_name)
 }
 ## The function is currently defined as
-functionfunction(TDat_LMF, 
+function(TDat_LMF, 
                            shapefile_name, shapefile_path, 
                            attribute_title, attribute_name){
                  if(missing(attribute_name)){
