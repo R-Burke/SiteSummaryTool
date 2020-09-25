@@ -53,7 +53,7 @@ Rachel Burke, ecologist/analyst @ Jornada
 \examples{
 TDat_LMF_Attributed <- AttributePlots(TDat_LMF,  shapefile_name, shapefile_path, 
                            attribute_title, attribute_name)
-}
+
 
 ## The function is currently defined as
 function (TDat_LMF,  shapefile_name, shapefile_path, attribute_title, attribute_name)
