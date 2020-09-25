@@ -60,6 +60,7 @@ function (TDat_LMF,  shapefile_name, shapefile_path, attribute_title, attribute_
 {
  
 }
+  }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
