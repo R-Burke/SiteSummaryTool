@@ -30,6 +30,8 @@ shapefile <- shapefile %>% dplyr::select(all_of(attribute_title))
 
 # Intersect shapefile with plots to get attributed
 TDat_LMF_Attributed <- sf::st_intersection(TDat_LMF_Spatial, sf::st_make_valid(shapefile))
+  
+TDat_LMF_Attributed <- TDat_LMF_Attributed %>% select(PrimaryKey, all_of(attribute_title))
 
 return(TDat_LMF_Attributed)
 
