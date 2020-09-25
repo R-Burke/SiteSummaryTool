@@ -10,7 +10,7 @@ PlotMetadata <- function(dataframe){
                 dplyr::arrange(Year)
   
 
-  PlotsPerYear <- ggplot(Plots_Simple , aes(Plots, text = stat(count))) +
+  PlotsPerYear <- ggplot2::ggplot(Plots_Simple , aes(Plots, text = stat(count))) +
     geom_bar(stat = "count" , position = position_stack(reverse = TRUE) ,
              aes(fill = Year) , width = .2 , ) +
     scale_fill_manual(values = Year_Palette) +
