@@ -273,6 +273,7 @@ if (nrow(SageBrushCover) < 1) {SG_Plots <- NULL} else{
 return(SG_Plots)
 }}
 }
+}
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
