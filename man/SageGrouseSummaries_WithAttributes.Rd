@@ -5,7 +5,7 @@
 %%  ~~function to do ... ~~
 }
 \description{
-Returns boxplot of Sage-Grouse indicator percent cover within your specified ecological site(s), colored by allotment information. Select one Sage-Grouse indicator in the inputs. Will return NULL if your specified state does not contain Type I Sage-Grouse habitat. Currently hard-coded with BLM naming convention for allotments, wil update to generalize.}
+Returns boxplot of Sage-Grouse indicator percent cover within your specified ecological site(s), colored by allotment information. Select one Sage-Grouse indicator in the inputs. Will return NULL if your specified state does not contain Type I Sage-Grouse habitat. Currently hard-coded with BLM naming convention for allotments, will update to generalize.}
 \usage{
 SageGrouseSummaries(EcoSitePlots, Species_plots_ecosite, Interactive, SummaryVar)
 }
