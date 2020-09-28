@@ -20,7 +20,7 @@ SumaryFigures_WithAttributes(x)
   \item{EcoSitePlots}{Combined TerrADat and LMF dataframe, subset to your ecological site. Returned object from consecutive Combine_AIM_LMF and SubsetEcologicalSite functions.}
   \item{Attributed_Pks}{simplified dataframe with PrimaryKeys associated with each shapefile attribute}
 }
-}
+
 \details{To get Attributed_Pks-
 
 attribute_title <- c("ALLOT_NAME", "ALLOT_NO", "PAST_NAME")
