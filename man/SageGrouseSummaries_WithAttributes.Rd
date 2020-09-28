@@ -257,7 +257,7 @@ if (nrow(SageBrushCover) < 1) {SG_Plots <- NULL} else{
   if(!Interactive){
         SG_Plots <- ggplot(SageBrushCover , aes(x = SageBrushCover , y = Percent)) +
                     geom_boxplot(width = .6 , outlier.shape = NA) +
-                    geom_jitter(width = .15 , size = 2, aes(color = PAST_NAME, shape = Noxious)) +
+                    geom_jitter(width = .15 , size = 2, aes(color = PAST_NAME)) +
                     scale_y_continuous(limits = c(0 , 100)) +
                     theme_light() +
                     scale_color_manual(values = Attribute_Fill, na.value="#000000") +
