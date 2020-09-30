@@ -8,7 +8,7 @@ SummaryFigures_Height_WithAttributes
 Returns a static or interactive (plotly-friendly) ggplot boxplot summarizing species heights across your ecological site(s) based on summary variables (Growth habit, individual species, or sagebrush), colored by attributed. Hard-coded for BLM grazing allotment naming convention. Will update to generalize for spatial attributes.
 }
 \usage{
-SummaryFigures_Height(Species_plots_ecosite, EcologicalSiteId, SummaryVar, GroupBy, Interactive)
+SummaryFigures_Height(Species_plots_ecosite, EcologicalSiteId, SummaryVar, GroupBy, Interactive, Attributed_Pks)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
