@@ -8,7 +8,7 @@ SummaryTables_Height_WithAttributes
 Produces a DT::datatable of height summaries grouped by individual species, growth habit, or sagebrush species. Summarized across each individual plot or across the entire ecological site(s). Fields for spatial attribute are included (currently hard coded for BLM grazing allotment naming convention. Outputs are html objects that can be directly downloaded to Excel.
 }
 \usage{
-SummaryTables_Height(Species_plots_ecosite, SummaryVar, SummarizeBy, GroupBy)
+SummaryTables_Height(Species_plots_ecosite, SummaryVar, SummarizeBy, GroupBy, Attributed_Pks)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,6 +24,7 @@ c("Plot", "EcologicalSite")
   \item{GroupBy}{
 c("Species", "GrowthHabit", "Sagebrush")
 }
+  \item{Attributed_Pks}{simplified dataframe with PrimaryKeys associated with each shapefile attribute}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
