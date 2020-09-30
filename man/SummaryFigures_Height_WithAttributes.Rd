@@ -137,8 +137,8 @@ if(SummaryVar == "Height" & GroupBy == "Species"){
                                                       text = paste("Plot Id: " ,  PlotID , 
                                                             "PrimaryKey: " , PrimaryKey ,
                                                              "Species: " , Species , 
-                                                             "Average Height: "  , Hgt_Species_Avg , 
-                                                             "Average Height , n: " , Hgt_Species_Avg_n ,
+                                                             "Average Height (cm): "  , Hgt_Species_Avg , 
+                                                             "Average Height, n: " , Hgt_Species_Avg_n ,
                                                              "Allotment: ", ALLOT_NAME,
                                                              "Pasture: ", PAST_NAME, 
                                                               sep = "<br>"))) +
@@ -148,7 +148,7 @@ if(SummaryVar == "Height" & GroupBy == "Species"){
                                           theme_light() +
                                           coord_flip() + 
                                           theme(axis.text.y = element_blank() , axis.ticks.y = element_blank() ,
-                                                axis.line.y = element_blank(), axis.text.y = ele)  +
+                                                axis.line.y = element_blank(), axis.title.x = element_blank())  +
                                                 facet_grid(rows = vars(Species) ,
                                                      switch = "y" ,
                                                      scales = "free_y" , drop = TRUE)
@@ -191,7 +191,7 @@ if(Interactive){
   
   Plots <- ggplot(HgtPrep, aes(x = GrowthHabit , y = Hgt_Species_Avg , 
                                text = paste("Plot Id: " , PlotID , 
-                                      "PrimaryKey: " , PrimaryKey ,
+                                       "PrimaryKey: " , PrimaryKey ,
                                        "Species: " , Species , 
                                        "Average Height (cm): "  , Hgt_Species_Avg , 
                                        "Average Height , n: " , Hgt_Species_Avg_n ,
