@@ -394,7 +394,7 @@ if(SummaryVar == "TraceSpecies" & SummarizeBy == "EcologicalSite"){
 
 if(SummaryVar == "GroundCover" & SummarizeBy == "Plot"){
 
-            table <- EcoSitePlots %>% dplyr::select(PlotID, PrimaryKey, BareSoilCover , 
+            table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, BareSoilCover , 
                      TotalFoliarCover , FH_TotalLitterCover , 
                      FH_RockCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
                      gather(key = Indicator , value = Percent, 
@@ -417,7 +417,7 @@ if(SummaryVar == "GroundCover" & SummarizeBy == "Plot"){
 
 if(SummaryVar == "GroundCover" & SummarizeBy == "EcologicalSite"){
   
-        table <- EcoSitePlots %>% dplyr::select(PlotID, PrimaryKey, BareSoilCover , 
+        table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, BareSoilCover , 
                                                 TotalFoliarCover , FH_TotalLitterCover , 
                                                 FH_RockCover) %>%
                  gather(key = Indicator , value = Percent, 
@@ -444,7 +444,7 @@ if(SummaryVar == "GroundCover" & SummarizeBy == "EcologicalSite"){
 
 if(SummaryVar == "Gap" & SummarizeBy == "Plot"){
 
-  table  <- EcoSitePlots %>% dplyr::select(PlotID , PrimaryKey , 
+  table  <- EcoSitePlots_Attributed %>% dplyr::select(PlotID , PrimaryKey , 
                              GapCover_25_50 , GapCover_51_100 , 
                              GapCover_101_200 , GapCover_200_plus , 
                              GapCover_25_plus, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% 
@@ -469,7 +469,7 @@ if(SummaryVar == "Gap" & SummarizeBy == "Plot"){
 
 if(SummaryVar == "Gap" & SummarizeBy == "EcologicalSite"){
   
-  table <- EcoSitePlots %>% dplyr::select(PlotID , PrimaryKey , 
+  table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID , PrimaryKey , 
                                           GapCover_25_50 , GapCover_51_100 , 
                                           GapCover_101_200 , GapCover_200_plus , 
                                           GapCover_25_plus) %>% 
@@ -498,7 +498,7 @@ if(SummaryVar == "Gap" & SummarizeBy == "EcologicalSite"){
   
 if(SummaryVar == "SoilStability" & SummarizeBy == "Plot"){
   
-        table <-  EcoSitePlots %>% dplyr::select(PlotID , PrimaryKey , 
+        table <-  EcoSitePlots_Attributed %>% dplyr::select(PlotID , PrimaryKey , 
                                    SoilStability_All , 
                                    SoilStability_Protected , 
                                    SoilStability_Unprotected, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
@@ -524,7 +524,7 @@ if(SummaryVar == "SoilStability" & SummarizeBy == "Plot"){
 
 if(SummaryVar == "SoilStability" & SummarizeBy == "EcologicalSite"){
   
-           table <-  EcoSitePlots %>% dplyr::select(PlotID , PrimaryKey , 
+           table <-  EcoSitePlots_Attributed %>% dplyr::select(PlotID , PrimaryKey , 
                                            SoilStability_All , 
                                            SoilStability_Protected , 
                                            SoilStability_Unprotected) %>%
