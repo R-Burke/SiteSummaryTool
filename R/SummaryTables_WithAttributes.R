@@ -398,7 +398,8 @@ if(SummaryVar == "GroundCover" & SummarizeBy == "Plot"){
                      TotalFoliarCover , FH_TotalLitterCover , 
                      FH_RockCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
                      gather(key = Indicator , value = Percent, 
-                     BareSoilCover:FH_RockCover) %>% mutate(Tally = 1) %>% 
+                     BareSoilCover:FH_RockCover) %>%
+                     filter(!is.na(Percent)) %>% mutate(Tally = 1) %>% 
                      group_by(PlotID, PrimaryKey, Indicator) %>% 
                      mutate_if(is.numeric, round , digits = 2) %>% select(-Tally) %>% 
                      rename(PercentCover = Percent) %>%
@@ -504,6 +505,7 @@ if(SummaryVar == "SoilStability" & SummarizeBy == "Plot"){
                                    SoilStability_Unprotected, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
                   gather(key = Veg , value = Rating , 
                   SoilStability_All:SoilStability_Unprotected) %>%
+                  filter(!is.na(Rating)) %>% 
                   mutate_if(is.numeric, round, digits = 2)  %>% 
                   group_by(PrimaryKey , PlotID) %>% 
                   mutate_if(is.numeric, round , digits = 2) %>%
@@ -530,6 +532,7 @@ if(SummaryVar == "SoilStability" & SummarizeBy == "EcologicalSite"){
                                            SoilStability_Unprotected) %>%
                                       gather(key = Veg , value = Rating , 
                                       SoilStability_All:SoilStability_Unprotected) %>%
+                                      filter(!is.na(Rating)) %>% 
                                       mutate_if(is.numeric, round, digits = 2)  %>% 
                                       group_by(Veg) %>% 
                                       summarize(AverageSoilStability = mean(Rating , na.rm = TRUE) ,
