@@ -285,7 +285,7 @@ if(SummaryVar == "GroundCover"){
        Plots <- Ground_Cover_Tall %>% mutate_if(is.numeric , round , digits = 2) %>% 
                    ggplot2::ggplot((aes(x = Indicator , y = Percent))) +
                    geom_boxplot(width = .6 , outlier.shape = NA) +
-                   geom_jitter(width = .15, aes(color = PAST_NAME, shape = Noxious)) +
+                   geom_jitter(width = .15, aes(color = PAST_NAME)) +
                    theme_light() +
                    scale_color_manual(values = Attribute_Fill, na.value="#000000") +
                    scale_y_continuous(limits = c(0 , 100)) +
