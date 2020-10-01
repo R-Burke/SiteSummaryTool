@@ -451,6 +451,7 @@ if(SummaryVar == "Gap" & SummarizeBy == "Plot"){
                              GapCover_25_plus, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% 
                              gather(key = Gap_Class_cm , 
                              value = Percent , GapCover_25_50:GapCover_25_plus) %>%
+                             filter(!is.na(Percent)) %>% 
                              mutate_if(is.numeric , round, digits = 2) %>% 
                              group_by(PlotID , PrimaryKey) %>%  
                              mutate_if(is.numeric, round , digits = 2) %>% 
@@ -476,6 +477,7 @@ if(SummaryVar == "Gap" & SummarizeBy == "EcologicalSite"){
                                           GapCover_25_plus) %>% 
                             gather(key = Gap_Class_cm , 
                             value = Percent , GapCover_25_50:GapCover_25_plus) %>%
+                            filter(!is.na(Percent)) %>%
                             mutate_if(is.numeric , round, digits = 2) %>%
                             group_by(Gap_Class_cm) %>%
                             summarize(AveragePercentCover = mean(Percent) ,
