@@ -152,7 +152,7 @@ if(SummaryVar == "GrowthHabitSub" & SummarizeBy == "EcologicalSite"){
 
 if(SummaryVar== "Noxious" & SummarizeBy == "Plot"){
   
-  table <- EcoSitePlots %>% dplyr::select(PlotID, PrimaryKey, AH_NoxCover, AH_NonNoxCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+  table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, AH_NoxCover, AH_NonNoxCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
                    rename(NonNoxious = AH_NonNoxCover, Noxious = AH_NoxCover) %>%
                    dplyr::mutate_if(is.numeric, round , digits = 2) %>% 
                    DT::datatable(extensions = 'Buttons', filter = "top" , 
@@ -170,7 +170,7 @@ if(SummaryVar== "Noxious" & SummarizeBy == "Plot"){
 
 if(SummaryVar== "Noxious" & SummarizeBy == "EcologicalSite"){
  
- prep <-  EcoSitePlots %>% dplyr::select(PlotID, PrimaryKey, AH_NoxCover, AH_NonNoxCover) %>% 
+ prep <-  EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, AH_NoxCover, AH_NonNoxCover) %>% 
                             dplyr::rename(NonNoxious = AH_NonNoxCover, Noxious = AH_NoxCover) %>%
                             gather(key = "Noxious", value = Percent,
                                    NonNoxious:Noxious) %>%
