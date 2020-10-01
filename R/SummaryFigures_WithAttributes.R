@@ -253,7 +253,7 @@ if(SummaryVar == "GroundCover"){
                                       TotalFoliarCover , FH_TotalLitterCover , 
                                       FH_RockCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
                         gather(key = Indicator , value = Percent, 
-                               BareSoilCover:PAST_NAME) %>% mutate(Tally = 1) 
+                               BareSoilCover:FH_RockCover) %>% mutate(Tally = 1) 
     if(Interactive){
     
     Plots <- Ground_Cover_Tall %>% mutate_if(is.numeric , round , digits = 2) %>% 
