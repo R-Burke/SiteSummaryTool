@@ -426,7 +426,7 @@ if(SummaryVar == "GroundCover" & SummarizeBy == "EcologicalSite"){
                  summarize(AveragePercentCover = mean(Percent) ,
                  Standard_Deviation = sd(Percent) ,
                  Low = min(Percent) ,
-                 High = max(Percent), n = sum(Tally)) %>% 
+                 High = max(Percent), n = sum(Tally), na.rm = TRUE) %>% 
                  mutate_if(is.numeric, round , digits = 2) %>%
                  DT::datatable(extensions = 'Buttons', filter = "top" , 
                                options = list(scrollX = TRUE ,
