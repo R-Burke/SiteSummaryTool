@@ -416,13 +416,13 @@ if(SummaryVar == "GroundCover" & SummarizeBy == "Plot"){
 }
 
 if(SummaryVar == "GroundCover" & SummarizeBy == "EcologicalSite"){
-  
+ 
         table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, BareSoilCover , 
                                                 TotalFoliarCover , FH_TotalLitterCover , 
                                                 FH_RockCover) %>%
                  gather(key = Indicator , value = Percent, 
                  BareSoilCover:FH_RockCover) %>% 
-                 filter(!is.na(Percent) %>% mutate(Tally = 1) %>%
+                 filter(!is.na(Percent)) %>% mutate(Tally = 1) %>%
                  group_by(Indicator) %>%
                  summarize(AveragePercentCover = mean(Percent) ,
                  Standard_Deviation = sd(Percent) ,
@@ -440,7 +440,6 @@ if(SummaryVar == "GroundCover" & SummarizeBy == "EcologicalSite"){
                         caption = (paste("Average percent cover in " , 
                                          toString(EcologicalSiteId))) , 
                         rownames = FALSE)
-
 }
 
 if(SummaryVar == "Gap" & SummarizeBy == "Plot"){
