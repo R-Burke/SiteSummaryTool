@@ -421,12 +421,13 @@ if(SummaryVar == "GroundCover" & SummarizeBy == "EcologicalSite"){
                                                 TotalFoliarCover , FH_TotalLitterCover , 
                                                 FH_RockCover) %>%
                  gather(key = Indicator , value = Percent, 
-                 BareSoilCover:FH_RockCover) %>% mutate(Tally = 1) %>%
+                 BareSoilCover:FH_RockCover) %>% 
+                 filter(!is.na(Percent) %>% mutate(Tally = 1) %>%
                  group_by(Indicator) %>%
                  summarize(AveragePercentCover = mean(Percent) ,
                  Standard_Deviation = sd(Percent) ,
                  Low = min(Percent) ,
-                 High = max(Percent), n = sum(Tally), na.rm = TRUE) %>% 
+                 High = max(Percent), n = sum(Tally)) %>% 
                  mutate_if(is.numeric, round , digits = 2) %>%
                  DT::datatable(extensions = 'Buttons', filter = "top" , 
                                options = list(scrollX = TRUE ,
