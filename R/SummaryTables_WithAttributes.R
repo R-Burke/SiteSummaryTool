@@ -31,7 +31,7 @@ EcoSitePlots_Attributed <- merge(EcoSitePlots, Attributed_Pks, by = "PrimaryKey"
 
 # Filtering empty plots
   
-EcoSitePlots_Attributed <- EcoSitePlots_Attributed %>$ filter(!is.na(Species))
+EcoSitePlots_Attributed <- EcoSitePlots_Attributed %>% filter(!is.na(Species))
   
 #Get Noxious versus Non in Standard Format
 
