@@ -59,13 +59,13 @@ TraceCover_Table_SpList <- TraceSpeciesCover %>%
                 dplyr::select(Species, ScientificName , Family , GrowthHabit ,
                 GrowthHabitSub , Duration, Noxious , SG_Group ,
                 SynonymOf , CommonName ,
-                UpdatedSpeciesCode, link, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% unique()
+                UpdatedSpeciesCode, link, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% unique() %>% filter(!is.na(Species))
 
 if(SummaryVar == "Species" & SummarizeBy == "Plot"){
   #hyperlink species
   Species_plots_ecosite_attributed$Species <- paste0("<a href='",Species_plots_ecosite_attributed$link,"'>",Species_plots_ecosite_attributed$Species,"</a>")
   
-  table <- Species_plots_ecosite_attributed %>% select(-link) %>% 
+  table <- Species_plots_ecosite_attributed %>% select(-link) %>% filter(!is.na(AH_SpeciesCover)) %>% 
            DT::datatable(escape = FALSE, extensions = 'Buttons', filter = "top" , 
                   options = list(scrollX = TRUE ,
                             dom = 'Bfrtip',
@@ -115,7 +115,8 @@ if(SummaryVar == "Species" & SummarizeBy == "EcologicalSite"){
 if(SummaryVar== "GrowthHabitSub" & SummarizeBy == "Plot"){
   
        table <-  Species_plots_ecosite_attributed %>% 
-                 group_by(PrimaryKey , PlotID , GrowthHabitSub , Duration) %>%
+                 group_by(PrimaryKey , PlotID , GrowthHabitSub , Duration) %>% 
+                 filter(!is.na(AH_SpeciesCover)) %>% 
                  summarize(PercentCover = sum(AH_SpeciesCover)) %>%
                  mutate_if(is.numeric, round , digits = 2) %>% 
                  filter(!is.na(GrowthHabitSub)) %>%
@@ -161,6 +162,7 @@ if(SummaryVar == "GrowthHabitSub" & SummarizeBy == "EcologicalSite"){
 if(SummaryVar== "Noxious" & SummarizeBy == "Plot"){
   
   table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, AH_NoxCover, AH_NonNoxCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+                   filter(!is.na(AH_SpeciesCover)) %>%
                    rename(NonNoxious = AH_NonNoxCover, Noxious = AH_NoxCover) %>%
                    dplyr::mutate_if(is.numeric, round , digits = 2) %>% 
                    DT::datatable(extensions = 'Buttons', filter = "top" , 
@@ -179,6 +181,7 @@ if(SummaryVar== "Noxious" & SummarizeBy == "Plot"){
 if(SummaryVar== "Noxious" & SummarizeBy == "EcologicalSite"){
  
  prep <-  EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, AH_NoxCover, AH_NonNoxCover) %>% 
+                            filter(!is.na(AH_SpeciesCover)) %>%
                             dplyr::rename(NonNoxious = AH_NonNoxCover, Noxious = AH_NoxCover) %>%
                             gather(key = "Noxious", value = Percent,
                                    NonNoxious:Noxious) %>%
@@ -357,7 +360,7 @@ if(SummaryVar == "TraceSpecies" & SummarizeBy == "Plot"){
           RichnessPresent <-  RichnessPresent %>% 
           dplyr::select(Species, ScientificName , GrowthHabit ,
           GrowthHabitSub , Duration, Noxious , SG_Group, 
-          PrimaryKey, PlotID, link, ALLOT_NAME, ALLOT_NO, PAST_NAME) 
+          PrimaryKey, PlotID, link, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% filter(!is.na(Species))
 
           RichnessPresent$Species <- paste0("<a href='",RichnessPresent$link,"'>", RichnessPresent$Species,"</a>")
   
@@ -404,7 +407,7 @@ if(SummaryVar == "GroundCover" & SummarizeBy == "Plot"){
 
             table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, BareSoilCover , 
                      TotalFoliarCover , FH_TotalLitterCover , 
-                     FH_RockCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+                     FH_RockCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% 
                      gather(key = Indicator , value = Percent, 
                      BareSoilCover:FH_RockCover) %>%
                      filter(!is.na(Percent)) %>% mutate(Tally = 1) %>% 
