@@ -24,14 +24,14 @@ Species_plots_ecosite_attributed <- merge(Species_plots_ecosite, Attributed_Pks,
   
  # For some reason there are plots in here with no data. Filtering them out. 
   
-Species_plots_ecosite_attributed <- Species_plots_ecosite_attributed %>% filter(!is.na(Species))
+Species_plots_ecosite_attributed <- Species_plots_ecosite_attributed %>% filter(!is.na(Species)) %>% filter(!is.na(GrowthHabit))
 
  #Attributing EcoSitePlots
 EcoSitePlots_Attributed <- merge(EcoSitePlots, Attributed_Pks, by = "PrimaryKey", all = TRUE)
 
 # Filtering empty plots
   
-EcoSitePlots_Attributed <- EcoSitePlots_Attributed %>% filter(!is.na(Species))
+EcoSitePlots_Attributed <- EcoSitePlots_Attributed %>% filter(!is.na(Species)) %>% filter(!is.na(GrowthHabit))
   
 #Get Noxious versus Non in Standard Format
 
