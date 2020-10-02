@@ -21,10 +21,18 @@ Species_plots_ecosite <- merge(Species_plots_ecosite , SpeciesList , by = c("Spe
 #Merge with Attributed_Pks
 Species_plots_ecosite_attributed <- merge(Species_plots_ecosite, Attributed_Pks, by = "PrimaryKey", all = TRUE) %>% 
                                     unique() 
+  
+ # For some reason there are plots in here with no data. Filtering them out. 
+  
+Species_plots_ecosite_attributed <- Species_plots_ecosite_attributed %>% filter(!is.na(Species))
 
+ #Attributing EcoSitePlots
 EcoSitePlots_Attributed <- merge(EcoSitePlots, Attributed_Pks, by = "PrimaryKey", all = TRUE)
 
-
+# Filtering empty plots
+  
+EcoSitePlots_Attributed <- EcoSitePlots_Attributed %>$ filter(!is.na(Species))
+  
 #Get Noxious versus Non in Standard Format
 
 Species_plots_ecosite_attributed$Noxious <- gsub("YES" , "Yes", Species_plots_ecosite_attributed$Noxious)
