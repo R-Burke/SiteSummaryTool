@@ -31,8 +31,7 @@ EcoSitePlots_Attributed <- merge(EcoSitePlots, Attributed_Pks, by = "PrimaryKey"
 
 # Filtering empty plots
   
-EcoSitePlots_Attributed <- EcoSitePlots_Attributed %>% filter(!is.na(Species)) %>% filter(!is.na(GrowthHabit))
-  
+EcoSitePlots_Attributed <- EcoSitePlots_Attributed %>% filter(!is.na(TotalFoliarCover))
 #Get Noxious versus Non in Standard Format
 
 Species_plots_ecosite_attributed$Noxious <- gsub("YES" , "Yes", Species_plots_ecosite_attributed$Noxious)
