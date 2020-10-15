@@ -41,8 +41,7 @@ if(SummaryVar == "Height" & SummarizeBy == "Plot" & GroupBy == "GrowthHabit"){
               MinHeight_cm = min(Hgt_Species_Avg) ,
               MaxHeight_cm = max(Hgt_Species_Avg), 
               n= sum(Hgt_Species_Avg_n),
-              Allotment = ALLOT_NAME,
-              Pasture = PAST_NAME)%>%
+              Allotment = ALLOT_NAME)%>%
               mutate_if(is.numeric, round , digits = 2) %>%
               DT::datatable(extensions = 'Buttons', filter = "top" , 
                             options = list(scrollX = TRUE ,
@@ -90,10 +89,9 @@ if(SummaryVar == "Height" & SummarizeBy == "Plot" & GroupBy == "Species"){
                                            GrowthHabitSub, Duration) %>%
                                    dplyr::select(GrowthHabitSub , Duration , PlotID , 
                                    PrimaryKey , Hgt_Species_Avg , 
-                                   Hgt_Species_Avg_n, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+                                   Hgt_Species_Avg_n, ALLOT_NAME, ALLOT_NO) %>%
                                    dplyr::rename(Allotment = ALLOT_NAME, 
-                                                 AllotmentNumber = ALLOT_NO, 
-                                                 Pasture = PAST_NAME) %>%
+                                                 AllotmentNumber = ALLOT_NO) %>%
                                    DT::datatable(extensions = 'Buttons', 
                                                  filter = "top" , 
                                                  options = list(scrollX = TRUE ,
@@ -140,10 +138,9 @@ if(SummaryVar == "Height" & SummarizeBy == "Plot" & GroupBy == "Sagebrush"){
                            CommonName , SG_Group) %>%
                   dplyr::select(Species, PlotID , 
                   PrimaryKey , Hgt_Species_Avg , 
-                  Hgt_Species_Avg_n, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+                  Hgt_Species_Avg_n, ALLOT_NAME, ALLOT_NO) %>%
                   dplyr::rename(Allotment = ALLOT_NAME, 
-                  AllotmentNumber = ALLOT_NO, 
-                  Pasture = PAST_NAME) %>% 
+                  AllotmentNumber = ALLOT_NO) %>% 
                   mutate_if(is.numeric, round , digits = 2) %>% 
                   DT::datatable(extensions = 'Buttons', 
                                 filter = "top" , 
