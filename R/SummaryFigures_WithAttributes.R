@@ -24,7 +24,7 @@ Species_plots_ecosite_attributed <- merge(Species_plots_ecosite_attributed , Spe
                                 AH_SpeciesCover_n, Hgt_Species_Avg, 
                                 Hgt_Species_Avg_n, GrowthHabit, GrowthHabitSub, Duration, 
                                 Noxious, SG_Group, link, 
-                                ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+                                ALLOT_NAME, ALLOT_NO) %>%
                          dplyr::mutate_if(is.numeric, round , digits = 2) 
 
 #Get Noxious versus Non in Standard Format
@@ -55,7 +55,7 @@ NoxNonPal_Fill <- c("grey75"  , "#D55E00")
 NoxNonPal_Dot <- c("grey33" , "#993300")
 ## Setting color for attribute title
 ## FIgure out how to not hardcode ALLOT_NAME and instead use attribute_title
-Attribute_Fill <- scales::seq_gradient_pal("#009966", "#E69F00", "Lab")(seq(0,1, length.out = length(unique(Species_plots_ecosite_attributed$PAST_NAME))))
+Attribute_Fill <- scales::seq_gradient_pal("#009966", "#E69F00", "Lab")(seq(0,1, length.out = length(unique(Species_plots_ecosite_attributed$ALLOT_NAME))))
 
 #Remove NAs for plotting
 Species_plots_ecosite_attributed <- Species_plots_ecosite_attributed %>% filter(!is.na(AH_SpeciesCover))
@@ -76,8 +76,7 @@ if(Interactive){
                                                                             "Percent Cover: " , AH_SpeciesCover , 
                                                                             "Noxious: " , Noxious , 
                                                                             "Allotment: ", ALLOT_NAME, 
-                                                                            "Pasture: ", PAST_NAME,
-                                                                            sep = "<br>"))) +
+                                                                             sep = "<br>"))) +
                                      geom_boxplot(width = .6 , outlier.shape = NA) +
                                      geom_jitter(width = .2 , size = 2 , shape = 21) +
                                      theme_light() +
@@ -105,7 +104,7 @@ if(!Interactive){
                              
                                  current_plot <- ggplot2::ggplot(Species_plots_ecosite_attributed , aes(x = GrowthHabitSub , y = AH_SpeciesCover)) +
                                  geom_boxplot(width = .6 , outlier.shape = NA) +
-                                 geom_jitter(width = .2 , size = 2, aes(color = PAST_NAME, shape = Noxious)) +
+                                 geom_jitter(width = .2 , size = 2, aes(color = ALLOT_NAME, shape = Noxious)) +
                                  scale_color_manual(values = Attribute_Fill, na.value="#000000") +
                                  labs(y = "Percent Cover", 
                                  caption = paste("Percent cover in: ", toString(EcologicalSiteId))) +
@@ -139,8 +138,7 @@ if(SummaryVar == "Noxious"){
                                                     "Percent Cover: " , AH_SpeciesCover, 
                                                     "Noxious: " , Noxious , 
                                                     "Allotment: ", ALLOT_NAME, 
-                                                     "Pasture: ", PAST_NAME,
-                                                    sep = "<br>")))) +
+                                                     sep = "<br>")))) +
            geom_boxplot(width = .6 , outlier.shape = NA) +
            geom_jitter(width = .15 , size = 2 , shape = 21) +
            theme_light() +
@@ -163,7 +161,7 @@ if(SummaryVar == "Noxious"){
        filter(!is.na(Noxious)) %>% filter(!is.na(AH_SpeciesCover)) %>%
                ggplot2::ggplot((aes(x = Noxious , y = AH_SpeciesCover))) +
                geom_boxplot(width = .6 , outlier.shape = NA) +
-               geom_jitter(width = .15 , size = 2 , aes(color = PAST_NAME, shape = Noxious)) +
+               geom_jitter(width = .15 , size = 2 , aes(color = ALLOT_NAME, shape = Noxious)) +
                scale_color_manual(values = Attribute_Fill, na.value="#000000") +
                theme_light() +
                scale_y_continuous(limits = c(0 , 100)) +
@@ -192,8 +190,7 @@ if(SummaryVar == "Species"){
                                                                                                           "Percent Cover: " , AH_SpeciesCover , "Noxious: " , 
                                                                                                           Noxious , 
                                                                                                           "Allotment: ", ALLOT_NAME, 
-                                                                                                          "Pasture: ", PAST_NAME,
-                                                                                                          sep = "<br>"))) +
+                                                                                                           sep = "<br>"))) +
                                          geom_boxplot(width = .6 , outlier.shape = NA) +
                                          geom_jitter(width = .15 , size = 1, shape = 21) +
                                          scale_y_continuous(limits = c(0 , 100)) +
@@ -222,7 +219,7 @@ if(SummaryVar == "Species"){
                                    FUN = function(PercentCover){
                                      current_plot <- ggplot2::ggplot(PercentCover , aes(x = Species , y = AH_SpeciesCover)) +
                                        geom_boxplot(width = .6 , outlier.shape = NA) +
-                                       geom_jitter(width = .15 , size = 1 , aes(color = PAST_NAME, shape = Noxious)) +
+                                       geom_jitter(width = .15 , size = 1 , aes(color = ALLOT_NAME, shape = Noxious)) +
                                        scale_color_manual(values = Attribute_Fill, na.value="#000000") + 
                                        scale_y_continuous(limits = c(0 , 100)) +
                                        theme_light() +
@@ -251,7 +248,7 @@ if(SummaryVar == "GroundCover"){
     Ground_Cover_Tall <- EcoSitePlots_Attributed %>% 
                         dplyr::select(PlotID, PrimaryKey, BareSoilCover , 
                                       TotalFoliarCover , FH_TotalLitterCover , 
-                                      FH_RockCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+                                      FH_RockCover, ALLOT_NAME, ALLOT_NO) %>%
                         gather(key = Indicator , value = Percent, 
                                BareSoilCover:FH_RockCover) %>% mutate(Tally = 1) 
     if(Interactive){
@@ -263,8 +260,7 @@ if(SummaryVar == "GroundCover"){
                            "Indicator: " , Indicator ,
                            "Percent Cover: " , Percent , 
                            "Allotment: ", ALLOT_NAME, 
-                            "Pasture: ", PAST_NAME,
-                           sep = "<br>" )))) +
+                            sep = "<br>" )))) +
                geom_boxplot(width = .6 , outlier.shape = NA) +
                geom_jitter(width = .15 , shape = 21) +
                theme_light() +
@@ -285,7 +281,7 @@ if(SummaryVar == "GroundCover"){
        Plots <- Ground_Cover_Tall %>% mutate_if(is.numeric , round , digits = 2) %>% 
                    ggplot2::ggplot((aes(x = Indicator , y = Percent))) +
                    geom_boxplot(width = .6 , outlier.shape = NA) +
-                   geom_jitter(width = .15, aes(color = PAST_NAME)) +
+                   geom_jitter(width = .15, aes(color = ALLOT_NAME)) +
                    theme_light() +
                    scale_color_manual(values = Attribute_Fill, na.value="#000000") +
                    scale_y_continuous(limits = c(0 , 100)) +
@@ -308,7 +304,7 @@ if(SummaryVar == "Gap"){
   Gap <- EcoSitePlots_Attributed %>% dplyr::select(PlotID , PrimaryKey , 
                                         GapCover_25_50 , GapCover_51_100 , 
                                         GapCover_101_200 , GapCover_200_plus , 
-                                        GapCover_25_plus, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% 
+                                        GapCover_25_plus, ALLOT_NAME, ALLOT_NO) %>% 
                                 gather(key = Gap_Class_cm , 
                                 value = Percent , GapCover_25_50:GapCover_25_plus) %>%
                                 mutate_if(is.numeric , round, digits = 2)
@@ -322,7 +318,6 @@ if(SummaryVar == "Gap"){
                                             "Gap Class (cm): " , Gap_Class_cm, 
                                             "Percent Cover: " , Percent , 
                                              "Allotment: ", ALLOT_NAME, 
-                                            "Pasture: ", PAST_NAME,
                                              sep = "<br>"))) +
                        geom_boxplot() + coord_flip() + 
                        geom_jitter(width = 0.1 , shape = 21) +
@@ -345,7 +340,7 @@ if(SummaryVar == "Gap"){
                                     toString(EcologicalSiteId))) +
                     geom_boxplot() + 
                     coord_flip() + 
-                    geom_jitter(width = 0.1, aes(color = PAST_NAME)) +
+                    geom_jitter(width = 0.1, aes(color = ALLOT_NAME)) +
                     theme_light() + 
                     scale_color_manual(values = Attribute_Fill, na.value="#000000") + 
                     theme(axis.text.y = element_blank() , 
@@ -368,8 +363,7 @@ if(SummaryVar == "SoilStability"){
                                              SoilStability_Protected , 
                                              SoilStability_Unprotected,
                                              ALLOT_NAME, 
-                                             ALLOT_NO,
-                                             PAST_NAME) %>%
+                                             ALLOT_NO) %>%
                           gather(key = Veg , value = Rating , 
                           SoilStability_All:SoilStability_Unprotected) %>%
                           mutate_if(is.numeric, round, digits = 2) 
@@ -382,7 +376,6 @@ if(SummaryVar == "SoilStability"){
                         "Plot ID: " , PlotID , 
                         "Rating: " , Rating , 
                         "Allotment: ", ALLOT_NAME, 
-                        "Pasture: ", PAST_NAME,
                         sep = "<br>"))) +
                         geom_boxplot() + 
                         coord_flip() + 
@@ -407,7 +400,7 @@ if(SummaryVar == "SoilStability"){
                           y = "Soil Stability Rating",
                           caption = paste("Soil stability ratings in: ", 
                                           toString(EcologicalSiteId))) +
-                          geom_boxplot() + coord_flip() + geom_jitter(width = 0.1, aes(color = PAST_NAME)) +
+                          geom_boxplot() + coord_flip() + geom_jitter(width = 0.1, aes(color = ALLOT_NAME)) +
                           theme_light() + 
                           scale_color_manual(values = Attribute_Fill, na.value="#000000") + 
                           theme(axis.text.y = element_blank() , 
