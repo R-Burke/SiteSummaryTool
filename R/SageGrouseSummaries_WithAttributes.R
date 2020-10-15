@@ -16,7 +16,7 @@ Species_plots_ecosite_attributed <- merge(Species_plots_ecosite, Attributed_Pks,
 
 EcoSitePlots_Attributed <- merge(EcoSitePlots, Attributed_Pks, by = "PrimaryKey", all = TRUE)
 
-Attribute_Fill <- scales::seq_gradient_pal("#009966", "#E69F00", "Lab")(seq(0,1, length.out = length(unique(Species_plots_ecosite_attributed$PAST_NAME))))
+Attribute_Fill <- scales::seq_gradient_pal("#009966", "#E69F00", "Lab")(seq(0,1, length.out = length(unique(Species_plots_ecosite_attributed$ALLOT_NAME))))
 
 
   Species_plots_ecosite_attributed <- merge(Species_plots_ecosite_attributed , SpeciesList , by = c("Species" , "SpeciesState")) %>%
@@ -24,7 +24,7 @@ Attribute_Fill <- scales::seq_gradient_pal("#009966", "#E69F00", "Lab")(seq(0,1,
                   PlotID,  AH_SpeciesCover,
                   AH_SpeciesCover_n, Hgt_Species_Avg,
                   Hgt_Species_Avg_n, GrowthHabit, GrowthHabitSub, Duration,
-                  Noxious, SG_Group, link, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+                  Noxious, SG_Group, link, ALLOT_NAME, ALLOT_NO) %>%
                   dplyr::mutate_if(is.numeric, round , digits = 2) %>%
                   filter(!is.na(SG_Group)) # only filter this for the sage-grouse plots
 
@@ -52,7 +52,6 @@ if(!EcoSitePlots_Attributed$State %in% SageGrouseStates){SG_Plots <- paste0("No 
                                                            "Percent Cover: " , AH_SpeciesCover ,
                                                            "Noxious: " , Noxious , 
                                                            "Allotment: ", ALLOT_NAME, 
-                                                           "Pasture: ", PAST_NAME,
                                                             sep = "<br>"))) +
                                             geom_boxplot(width = .6 , outlier.shape = NA) +
                                             geom_jitter(width = .15 , size = 2 , shape = 21) +
@@ -77,7 +76,7 @@ if(!EcoSitePlots_Attributed$State %in% SageGrouseStates){SG_Plots <- paste0("No 
     SG_Plots <- if (nrow(PrefForb) < 1) {SG_Plots <- NULL} else{
       ggplot(PrefForb , aes(x = Species , y = AH_SpeciesCover)) +
                         geom_boxplot(width = .6 , outlier.shape = NA) +
-                        geom_jitter(width = .15 , size = 2, aes(color = PAST_NAME, shape = Noxious)) +
+                        geom_jitter(width = .15 , size = 2, aes(color = ALLOT_NAME, shape = Noxious)) +
                         scale_color_manual(values = Attribute_Fill, na.value="#000000") +
                         scale_y_continuous(limits = c(0 , 100)) +
                         theme_light() +
@@ -106,7 +105,6 @@ if(SummaryVar == "SageGrouseGroup"){
                                                 "Percent Cover: " , AH_SpeciesCover ,
                                                 "Noxious: " , Noxious , 
                                                 "Allotment: ", ALLOT_NAME, 
-                                                "Pasture: ", PAST_NAME,
                                                  sep = "<br>"))) +
                     geom_boxplot(width = .6 , outlier.shape = NA) +
                     geom_jitter(width = .15 , size = 2 , shape = 21) +
@@ -124,7 +122,7 @@ if(SummaryVar == "SageGrouseGroup"){
 
     SG_Plots <- ggplot(Species_plots_ecosite_attributed , aes(x = SG_Group , y = AH_SpeciesCover)) +
                             geom_boxplot(width = .6 , outlier.shape = NA) +
-                            geom_jitter(width = .15 , size = 2, aes(color = PAST_NAME, shape = Noxious)) +
+                            geom_jitter(width = .15 , size = 2, aes(color = ALLOT_NAME, shape = Noxious)) +
                             scale_y_continuous(limits = c(0 , 100)) +
                             theme_light() +
                             labs(y = "Percent Cover") +
@@ -150,8 +148,7 @@ SageBrushCover <- EcoSitePlots_Attributed %>% dplyr::select(PlotID , PrimaryKey 
                                                  AH_SagebrushCover_Live ,
                                                  AH_SagebrushCover_Dead, 
                                                  ALLOT_NAME,
-                                                 ALLOT_NO, 
-                                                 PAST_NAME) %>%
+                                                 ALLOT_NO) %>%
                                     mutate_if(is.numeric, round , digits = 2) %>%
                 gather(key = SageBrushCover ,
                        value = Percent , AH_SagebrushCover:AH_SagebrushCover_Dead)
@@ -164,8 +161,7 @@ if (nrow(SageBrushCover) < 1) {SG_Plots <- NULL} else{
                                                     "Plot ID: " , PlotID ,
                                                     "Percent Cover: " , Percent ,
                                                     "Allotment: ", ALLOT_NAME, 
-                                                    "Pasture: ", PAST_NAME,
-                                                    sep = "<br>"))) +
+                                                     sep = "<br>"))) +
                              geom_boxplot(width = .6 , outlier.shape = NA) +
                              geom_jitter(width = .15 , size = 2 , shape = 21) +
                              scale_y_continuous(limits = c(0 , 100)) +
@@ -186,7 +182,7 @@ if (nrow(SageBrushCover) < 1) {SG_Plots <- NULL} else{
   if(!Interactive){
         SG_Plots <- ggplot(SageBrushCover , aes(x = SageBrushCover , y = Percent)) +
                     geom_boxplot(width = .6 , outlier.shape = NA) +
-                    geom_jitter(width = .15 , size = 2, aes(color = PAST_NAME)) +
+                    geom_jitter(width = .15 , size = 2, aes(color = ALLOT_NAME)) +
                     scale_y_continuous(limits = c(0 , 100)) +
                     theme_light() +
                     scale_color_manual(values = Attribute_Fill, na.value="#000000") +
