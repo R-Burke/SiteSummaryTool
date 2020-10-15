@@ -21,7 +21,7 @@ Species_plots_ecosite_attributed <- merge(Species_plots_ecosite_attributed , Spe
                                 AH_SpeciesCover_n, Hgt_Species_Avg, 
                                 Hgt_Species_Avg_n, GrowthHabit, GrowthHabitSub, Duration, 
                                 Noxious, SG_Group, link, 
-                                ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+                                ALLOT_NAME, ALLOT_NO) %>%
                          dplyr::mutate_if(is.numeric, round , digits = 2) 
 
 
@@ -31,7 +31,7 @@ Species_plots_ecosite_attributed <- merge(Species_plots_ecosite_attributed , Spe
 NoxNonPal_Fill <- c("grey75"  , "#D55E00")
 NoxNonPal_Dot <- c("grey33" , "#993300")
 ## FIgure out how to not hardcode ALLOT_NAME and instead use attribute_title
-Attribute_Fill <- scales::seq_gradient_pal("#009966", "#E69F00", "Lab")(seq(0,1, length.out = length(unique(Species_plots_ecosite_attributed$PAST_NAME))))
+Attribute_Fill <- scales::seq_gradient_pal("#009966", "#E69F00", "Lab")(seq(0,1, length.out = length(unique(Species_plots_ecosite_attributed$ALLOT_NAME))))
 
 
 # Prep for height
@@ -59,7 +59,6 @@ if(SummaryVar == "Height" & GroupBy == "Species"){
                                                              "Average Height (cm): "  , Hgt_Species_Avg , 
                                                              "Average Height, n: " , Hgt_Species_Avg_n ,
                                                              "Allotment: ", ALLOT_NAME,
-                                                             "Pasture: ", PAST_NAME, 
                                                               sep = "<br>"))) +
                                           geom_boxplot(width = .6 , outlier.shape = NA) +
                                           geom_jitter(width = .15 , shape = 21) +
@@ -84,7 +83,7 @@ if(SummaryVar == "Height" & GroupBy == "Species"){
                     FUN = function(HgtPrep){
                     current_plot <- ggplot(HgtPrep , aes(x = Species , y = Hgt_Species_Avg)) +
                                            geom_boxplot(width = .6 , outlier.shape = NA) +
-                                           geom_jitter(width = .15 , size = 2 , aes(color = PAST_NAME, shape = Noxious)) +
+                                           geom_jitter(width = .15 , size = 2 , aes(color = ALLOT_NAME, shape = Noxious)) +
                                            scale_color_manual(values = Attribute_Fill, na.value="#000000") + 
                                          # scale_y_continuous(limits = c(0 , 100)) +
                                            theme_light() +
@@ -115,7 +114,6 @@ if(Interactive){
                                        "Average Height (cm): "  , Hgt_Species_Avg , 
                                        "Average Height , n: " , Hgt_Species_Avg_n ,
                                        "Allotment: ", ALLOT_NAME, 
-                                       'Pasture: ', PAST_NAME,
                                         sep = "<br>"))) +
                              geom_boxplot() +
                              geom_jitter(width = .1 , shape = 21) + 
@@ -136,7 +134,7 @@ if(Interactive){
           Plots <- ggplot(HgtPrep, aes(x = GrowthHabit , y = Hgt_Species_Avg)) +
                          geom_boxplot() +
                          geom_jitter(width = .2 , 
-                                    (aes(color = PAST_NAME, shape = Noxious))) +
+                                    (aes(color = ALLOT_NAME, shape = Noxious))) +
                          labs(x = "Growth Habit" , 
                               y =  "Average Height, cm",
                               caption = paste("Species height in: ", 
@@ -168,8 +166,7 @@ if(SummaryVar == "Height" & GroupBy == "Sagebrush"){
                        "Average Height (cm): "  , Hgt_Species_Avg , 
                        "Average Height , n: " , Hgt_Species_Avg_n ,
                        "Allotment: ", ALLOT_NAME,
-                       "Pasture: ", PAST_NAME,
-                       sep = "<br>"))) +
+                        sep = "<br>"))) +
               geom_boxplot() +
               geom_jitter(width = .1 , shape = 21) + 
               theme_light() +
@@ -185,7 +182,7 @@ if(!Interactive){
   
   Plots <-  ggplot(Sagebrush, aes(x = Species , y = Hgt_Species_Avg)) +
            geom_boxplot() +
-           geom_jitter(width = .1 , aes(color = PAST_NAME, shape = Noxious)) + theme_light() +
+           geom_jitter(width = .1 , aes(color = ALLOT_NAME, shape = Noxious)) + theme_light() +
            theme(axis.ticks.y = element_blank() ,
            axis.line.y = element_blank()) +  
            scale_color_manual(values = Attribute_Fill, na.value="#000000") +
