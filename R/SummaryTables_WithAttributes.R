@@ -58,7 +58,7 @@ TraceCover_Table_SpList <- TraceSpeciesCover %>%
                 dplyr::select(Species, ScientificName , Family , GrowthHabit ,
                 GrowthHabitSub , Duration, Noxious , SG_Group ,
                 SynonymOf , CommonName ,
-                UpdatedSpeciesCode, link, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% unique() %>% filter(!is.na(Species))
+                UpdatedSpeciesCode, link, ALLOT_NAME, ALLOT_NO) %>% unique() %>% filter(!is.na(Species))
 
 if(SummaryVar == "Species" & SummarizeBy == "Plot"){
   #hyperlink species
@@ -160,7 +160,7 @@ if(SummaryVar == "GrowthHabitSub" & SummarizeBy == "EcologicalSite"){
 
 if(SummaryVar== "Noxious" & SummarizeBy == "Plot"){
   
-  table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, AH_NoxCover, AH_NonNoxCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+  table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, AH_NoxCover, AH_NonNoxCover, ALLOT_NAME, ALLOT_NO) %>%
                    filter(!is.na(AH_NonNoxCover)) %>%
                    rename(NonNoxious = AH_NonNoxCover, Noxious = AH_NoxCover) %>%
                    dplyr::mutate_if(is.numeric, round , digits = 2) %>% 
@@ -359,7 +359,7 @@ if(SummaryVar == "TraceSpecies" & SummarizeBy == "Plot"){
           RichnessPresent <-  RichnessPresent %>% 
           dplyr::select(Species, ScientificName , GrowthHabit ,
           GrowthHabitSub , Duration, Noxious , SG_Group, 
-          PrimaryKey, PlotID, link, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% filter(!is.na(Species))
+          PrimaryKey, PlotID, link, ALLOT_NAME, ALLOT_NO) %>% filter(!is.na(Species))
 
           RichnessPresent$Species <- paste0("<a href='",RichnessPresent$link,"'>", RichnessPresent$Species,"</a>")
   
@@ -406,7 +406,7 @@ if(SummaryVar == "GroundCover" & SummarizeBy == "Plot"){
 
             table <- EcoSitePlots_Attributed %>% dplyr::select(PlotID, PrimaryKey, BareSoilCover , 
                      TotalFoliarCover , FH_TotalLitterCover , 
-                     FH_RockCover, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% 
+                     FH_RockCover, ALLOT_NAME, ALLOT_NO) %>% 
                      gather(key = Indicator , value = Percent, 
                      BareSoilCover:FH_RockCover) %>%
                      filter(!is.na(Percent)) %>% mutate(Tally = 1) %>% 
@@ -458,7 +458,7 @@ if(SummaryVar == "Gap" & SummarizeBy == "Plot"){
   table  <- EcoSitePlots_Attributed %>% dplyr::select(PlotID , PrimaryKey , 
                              GapCover_25_50 , GapCover_51_100 , 
                              GapCover_101_200 , GapCover_200_plus , 
-                             GapCover_25_plus, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>% 
+                             GapCover_25_plus, ALLOT_NAME, ALLOT_NO) %>% 
                              gather(key = Gap_Class_cm , 
                              value = Percent , GapCover_25_50:GapCover_25_plus) %>%
                              filter(!is.na(Percent)) %>% 
@@ -514,7 +514,7 @@ if(SummaryVar == "SoilStability" & SummarizeBy == "Plot"){
         table <-  EcoSitePlots_Attributed %>% dplyr::select(PlotID , PrimaryKey , 
                                    SoilStability_All , 
                                    SoilStability_Protected , 
-                                   SoilStability_Unprotected, ALLOT_NAME, ALLOT_NO, PAST_NAME) %>%
+                                   SoilStability_Unprotected, ALLOT_NAME, ALLOT_NO) %>%
                   gather(key = Veg , value = Rating , 
                   SoilStability_All:SoilStability_Unprotected) %>%
                   filter(!is.na(Rating)) %>% 
